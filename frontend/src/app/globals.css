@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #f8fafc;
+  color: #1e293b;
+  font-size: 1.125rem; /* 18px base size for rural legibility */
+  line-height: 1.75rem;
+  -webkit-font-smoothing: antialiased;
+  top: 0px !important;
+  position: static !important;
+}
+
+/* Accessibility focus rings for high contrast keyboard & touch usability */
+*:focus-visible {
+  outline: 3px solid #334155;
+  outline-offset: 2px;
+}
+
+/* Prominent large touch targets */
+.touch-target-large {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/* Large input fields for high-contrast accessibility */
+input, select, textarea {
+  font-size: 1.125rem !important;
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Google Translate Clean Integration - Hide Intrusive Banner & Reset Body */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.skiptranslate:not(.goog-te-combo) {
+  display: none !important;
+}
+
+#google_translate_element {
+  display: none !important;
+}

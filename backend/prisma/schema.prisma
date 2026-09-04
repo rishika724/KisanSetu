@@ -1,0 +1,90 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum VehicleType {
+  TRACTOR
+  BULLOCK_CART
+  TRUCK
+}
+
+enum BookingStatus {
+  BOOKED
+  STAGING
+  MANDI_GATE
+  COMPLETED
+  CANCELLED
+}
+
+model Farmer {
+  id              String    @id @default(cuid())
+  aadhaarHash     String    @unique
+  name            String
+  phone           String
+  language        String    @default("hi")
+  landSize        Float
+  locationVillage String
+  bookings        Booking[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model ProcurementCenter {
+  id               String   @id @default(cuid())
+  name             String
+  locationLat      Float
+  locationLng      Float
+  weighbridgeCount Int
+  hourlyCapacity   Int
+  slots            Slot[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Slot {
+  id          String            @id @default(cuid())
+  centerId    String
+  date        String            // Format: YYYY-MM-DD
+  timeWindow  String            // Format: '09:00-10:00'
+  maxCapacity Int
+  bookedCount Int               @default(0)
+  center      ProcurementCenter @relation(fields: [centerId], references: [id], onDelete: Cascade)
+  bookings    Booking[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([centerId, date, timeWindow])
+}
+
+model Booking {
+  id                String             @id @default(cuid())
+  farmerId          String
+  slotId            String
+  vehicleType       VehicleType
+  cropType          String
+  estimatedWeight   Float
+  tokenHash         String             @unique
+  status            BookingStatus      @default(BOOKED)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  farmer            Farmer             @relation(fields: [farmerId], references: [id], onDelete: Restrict)
+  slot              Slot               @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  qualityInspection QualityInspection?
+}
+
+model QualityInspection {
+  id             String   @id @default(cuid())
+  bookingId      String   @unique
+  moistureLevel  Float
+  dockageGrade   String
+  approvedWeight Float
+  totalPayout    Float
+  inspectorId    String
+  verifiedAt     DateTime @default(now())
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}

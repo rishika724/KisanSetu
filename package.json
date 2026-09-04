@@ -1,0 +1,25 @@
+{
+  "name": "kisan-setu-root",
+  "version": "1.0.0",
+  "description": "Kisan Setu (किसान सेतु) - Agricultural Procurement Platform (SIH Problem 26032)",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "seed": "npm --prefix backend run seed",
+    "test:backend": "npm --prefix backend run test"
+  },
+  "keywords": [
+    "sih-26032",
+    "kisan-setu",
+    "mandi-procurement",
+    "agriculture",
+    "prisma",
+    "express",
+    "nextjs"
+  ],
+  "author": "SIH Team",
+  "license": "MIT"
+}
