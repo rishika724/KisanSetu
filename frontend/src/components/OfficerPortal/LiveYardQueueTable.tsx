@@ -51,6 +51,11 @@ export function LiveYardQueueTable({
     loadData();
   }, [statusFilter, searchQuery]);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(loadData, 5000);
+    return () => window.clearInterval(intervalId);
+  }, [statusFilter, searchQuery]);
+
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     try {
       setUpdatingId(bookingId);
@@ -213,7 +218,7 @@ export function LiveYardQueueTable({
                       <td className="p-4 align-middle">
                         <div className="font-bold text-slate-900 text-base">{b.farmer?.name || 'N/A'}</div>
                         <div className="text-xs text-slate-500 font-medium">
-                          {b.farmer?.phone} • {b.farmer?.locationVillage}
+                          {b.farmer?.phoneno} • {b.farmer?.locationVillage}
                         </div>
                       </td>
 

@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCenters = getCenters;
 exports.getAvailableSlots = getAvailableSlots;
@@ -6,14 +9,19 @@ exports.createBooking = createBooking;
 exports.verifyToken = verifyToken;
 exports.updateBookingStatus = updateBookingStatus;
 exports.getFarmers = getFarmers;
+exports.registerFarmer = registerFarmer;
+exports.verifyFarmer = verifyFarmer;
+exports.sendNotification = sendNotification;
 exports.getQueueCapacity = getQueueCapacity;
 exports.checkGeofenceStatus = checkGeofenceStatus;
 exports.generateOfflineTokenEndpoint = generateOfflineTokenEndpoint;
 exports.getAllBookings = getAllBookings;
 exports.createQualityInspection = createQualityInspection;
+const crypto_1 = __importDefault(require("crypto"));
 const prisma_1 = require("../prisma");
 const dbStore_1 = require("../dbStore");
 const token_service_1 = require("../services/token.service");
+const notification_service_1 = require("../services/notification.service");
 const kisanSetuQueueEngine_1 = require("../services/kisanSetuQueueEngine");
 /**
  * GET /api/kisan-setu/centers
@@ -105,12 +113,12 @@ async function getAvailableSlots(req, res) {
  */
 async function createBooking(req, res) {
     try {
-        const { farmerId, slotId, vehicleType, cropType, estimatedWeight } = req.body;
+        const { farmerId, slotId, vehicleType, cropType, estimatedWeight, notificationPreferences } = req.body;
         // Validate inputs
-        if (!slotId || !vehicleType || !cropType || !estimatedWeight) {
+        if (!farmerId || !slotId || !vehicleType || !cropType || !estimatedWeight) {
             return res.status(400).json({
                 success: false,
-                message: 'Missing required fields: slotId, vehicleType, cropType, estimatedWeight'
+                message: 'Missing required fields: farmerId, slotId, vehicleType, cropType, estimatedWeight'
             });
         }
         const validVehicles = ['TRACTOR', 'BULLOCK_CART', 'TRUCK'];
@@ -142,14 +150,9 @@ async function createBooking(req, res) {
                     message: 'Slot capacity reached. Please choose another slot window.'
                 });
             }
-            // 2. Fetch or default farmer
-            let resolvedFarmerId = farmerId;
-            if (!resolvedFarmerId) {
-                const firstFarmer = await prisma_1.prisma.farmer.findFirst();
-                resolvedFarmerId = firstFarmer ? firstFarmer.id : 'farmer-01';
-            }
+            // 2. Fetch the verified farmer selected during registration
             const farmer = await prisma_1.prisma.farmer.findUnique({
-                where: { id: resolvedFarmerId }
+                where: { id: farmerId }
             });
             if (!farmer) {
                 return res.status(404).json({ success: false, message: 'Farmer not found' });
@@ -188,12 +191,26 @@ async function createBooking(req, res) {
                     data: { bookedCount: { increment: 1 } }
                 })
             ]);
+            const notificationResults = await (0, notification_service_1.dispatchNotification)({
+                phone: newBooking.farmer.phoneno,
+                preferences: notificationPreferences,
+                template: 'bookingConfirmation',
+                values: {
+                    name: newBooking.farmer.name,
+                    mandiName: newBooking.slot.center.name,
+                    date: newBooking.slot.date,
+                    time: newBooking.slot.timeWindow,
+                    token: tokenPackage.tokenHash,
+                    passLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?tab=offlinePass`
+                }
+            });
             return res.status(201).json({
                 success: true,
                 message: 'Booking created successfully with SHA-256 offline token',
                 data: {
                     booking: newBooking,
-                    token: tokenPackage
+                    token: tokenPackage,
+                    notifications: notificationResults
                 }
             });
         }
@@ -209,8 +226,10 @@ async function createBooking(req, res) {
                     message: 'Slot capacity reached. Please choose another slot window.'
                 });
             }
-            const resolvedFarmerId = farmerId || dbStore_1.memoryStore.farmers[0].id;
-            const farmer = dbStore_1.memoryStore.farmers.find((f) => f.id === resolvedFarmerId) || dbStore_1.memoryStore.farmers[0];
+            const farmer = dbStore_1.memoryStore.farmers.find((f) => f.id === farmerId);
+            if (!farmer) {
+                return res.status(404).json({ success: false, message: 'Farmer not found. Register or verify the farmer first.' });
+            }
             const center = dbStore_1.memoryStore.centers.find((c) => c.id === slot.centerId);
             const tokenPackage = (0, token_service_1.createOfflineTokenPackage)({
                 farmerId: farmer.id,
@@ -240,12 +259,26 @@ async function createBooking(req, res) {
                 }
             };
             dbStore_1.memoryStore.bookings.push(newBooking);
+            const notificationResults = await (0, notification_service_1.dispatchNotification)({
+                phone: farmer.phoneno,
+                preferences: notificationPreferences,
+                template: 'bookingConfirmation',
+                values: {
+                    name: farmer.name,
+                    mandiName: center?.name || 'Mandi Center',
+                    date: slot.date,
+                    time: slot.timeWindow,
+                    token: tokenPackage.tokenHash,
+                    passLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?tab=offlinePass`
+                }
+            });
             return res.status(201).json({
                 success: true,
                 message: 'Booking created successfully with SHA-256 offline token',
                 data: {
                     booking: newBooking,
-                    token: tokenPackage
+                    token: tokenPackage,
+                    notifications: notificationResults
                 },
                 isMock: true
             });
@@ -275,7 +308,7 @@ async function verifyToken(req, res) {
                         select: {
                             id: true,
                             name: true,
-                            phone: true,
+                            phoneno: true,
                             aadhaarHash: true,
                             locationVillage: true,
                             landSize: true,
@@ -297,6 +330,15 @@ async function verifyToken(req, res) {
                     message: 'Invalid or unregistered token hash. Vehicle entry denied.'
                 });
             }
+            const notificationResults = await (0, notification_service_1.dispatchNotification)({
+                phone: booking.farmer.phoneno,
+                template: 'gateEntry',
+                values: {
+                    vehicleNo: booking.vehicleType,
+                    mandiName: booking.slot.center.name,
+                    position: 1
+                }
+            });
             return res.json({
                 success: true,
                 verified: true,
@@ -318,7 +360,8 @@ async function verifyToken(req, res) {
                         name: booking.slot.center.name,
                         weighbridgeCount: booking.slot.center.weighbridgeCount
                     },
-                    qualityInspection: booking.qualityInspection
+                    qualityInspection: booking.qualityInspection,
+                    notifications: notificationResults
                 }
             });
         }
@@ -336,6 +379,15 @@ async function verifyToken(req, res) {
             const farmer = dbStore_1.memoryStore.farmers.find((f) => f.id === booking.farmerId) || booking.farmer;
             const slot = dbStore_1.memoryStore.slots.find((s) => s.id === booking.slotId) || booking.slot;
             const center = slot ? dbStore_1.memoryStore.centers.find((c) => c.id === slot.centerId) : null;
+            const notificationResults = await (0, notification_service_1.dispatchNotification)({
+                phone: farmer?.phoneno || '',
+                template: 'gateEntry',
+                values: {
+                    vehicleNo: booking.vehicleType,
+                    mandiName: center?.name || 'Mandi Center',
+                    position: 1
+                }
+            });
             return res.json({
                 success: true,
                 verified: true,
@@ -352,7 +404,7 @@ async function verifyToken(req, res) {
                         ? {
                             id: farmer.id,
                             name: farmer.name,
-                            phone: farmer.phone,
+                            phoneno: farmer.phoneno,
                             aadhaarHash: farmer.aadhaarHash,
                             locationVillage: farmer.locationVillage,
                             landSize: farmer.landSize,
@@ -371,7 +423,8 @@ async function verifyToken(req, res) {
                             weighbridgeCount: center.weighbridgeCount
                         }
                         : null,
-                    qualityInspection: null
+                    qualityInspection: null,
+                    notifications: notificationResults
                 },
                 isMock: true
             });
@@ -434,6 +487,88 @@ async function getFarmers(req, res) {
     }
     catch (error) {
         return res.status(500).json({ success: false, error: error.message });
+    }
+}
+/**
+ * POST /api/kisan-setu/farmers/register
+ * Register a farmer without persisting the raw Aadhaar number.
+ */
+async function registerFarmer(req, res) {
+    try {
+        const { name, phoneno, aadhaarNumber, village, crop, quantity, vehicleType } = req.body;
+        const normalizedPhone = String(phoneno || '').replace(/\D/g, '');
+        const normalizedAadhaar = String(aadhaarNumber || normalizedPhone).replace(/\D/g, '');
+        if (!name?.trim() || !/^\d{10}$/.test(normalizedPhone)) {
+            return res.status(400).json({
+                success: false,
+                message: 'name and phoneno (10 digits) are required'
+            });
+        }
+        const aadhaarHash = crypto_1.default.createHash('sha256').update(normalizedAadhaar).digest('hex');
+        if ((0, prisma_1.isDbActive)()) {
+            const existing = await prisma_1.prisma.farmer.findFirst({
+                where: { OR: [{ phoneno: normalizedPhone }, { aadhaarHash }] }
+            });
+            if (existing) {
+                return res.status(409).json({ success: false, message: 'A farmer with this phone number or Aadhaar already exists', data: existing });
+            }
+            const farmer = await prisma_1.prisma.farmer.create({
+                data: { name: name.trim(), phoneno: normalizedPhone, aadhaarHash }
+            });
+            return res.status(201).json({ success: true, data: farmer });
+        }
+        const existing = dbStore_1.memoryStore.farmers.find((farmer) => farmer.phoneno === normalizedPhone || farmer.aadhaarHash === aadhaarHash);
+        if (existing) {
+            return res.status(409).json({ success: false, message: 'A farmer with this phone number or Aadhaar already exists', data: existing, isMock: true });
+        }
+        const farmer = {
+            id: crypto_1.default.randomUUID(),
+            aadhaarHash,
+            name: name.trim(),
+            phoneno: normalizedPhone,
+            language: 'hi',
+            locationVillage: village?.trim() || undefined,
+            primaryCrop: crop || undefined,
+            approximateQuantity: Number(quantity) || undefined,
+            vehicleType: vehicleType || undefined,
+        };
+        dbStore_1.memoryStore.farmers.push(farmer);
+        return res.status(201).json({ success: true, data: farmer, isMock: true });
+    }
+    catch (error) {
+        console.error('Error registering farmer:', error);
+        return res.status(500).json({ success: false, message: 'Failed to register farmer', error: error.message });
+    }
+}
+/**
+ * GET /api/kisan-setu/farmers/verify?phoneno=
+ */
+async function verifyFarmer(req, res) {
+    try {
+        const normalizedPhone = String(req.query.phoneno || '').replace(/\D/g, '');
+        if (!/^\d{10}$/.test(normalizedPhone)) {
+            return res.status(400).json({ success: false, message: 'phoneno must contain 10 digits' });
+        }
+        const farmer = (0, prisma_1.isDbActive)()
+            ? await prisma_1.prisma.farmer.findUnique({ where: { phoneno: normalizedPhone } })
+            : dbStore_1.memoryStore.farmers.find((item) => item.phoneno === normalizedPhone);
+        return res.json({ success: true, exists: Boolean(farmer), data: farmer || null, isMock: !(0, prisma_1.isDbActive)() });
+    }
+    catch (error) {
+        return res.status(500).json({ success: false, message: 'Failed to verify farmer', error: error.message });
+    }
+}
+/** POST /api/kisan-setu/notify - demo/admin notification dispatcher */
+async function sendNotification(req, res) {
+    try {
+        const { phone, language, preferences, template = 'bookingConfirmation', values = {} } = req.body;
+        if (!phone)
+            return res.status(400).json({ success: false, message: 'phone is required' });
+        const notifications = await (0, notification_service_1.dispatchNotification)({ phone, language, preferences, template, values });
+        return res.json({ success: true, data: notifications, isMock: notifications.some((item) => item.simulated) });
+    }
+    catch (error) {
+        return res.status(500).json({ success: false, message: 'Notification dispatch failed', error: error.message });
     }
 }
 /**
@@ -679,7 +814,7 @@ async function createQualityInspection(req, res) {
             }
         }
         const farmerName = updatedBooking?.farmer?.name || 'Farmer';
-        const farmerPhone = updatedBooking?.farmer?.phone || '+91 98765 43210';
+        const farmerPhone = updatedBooking?.farmer?.phoneno || '9876543210';
         const receiptNumber = `REC-KS-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
         const mockSmsPayload = {
             recipientPhone: farmerPhone,
@@ -689,6 +824,11 @@ async function createQualityInspection(req, res) {
             receiptNumber,
             dbtStatus: 'INITIATED'
         };
+        const notificationResults = await (0, notification_service_1.dispatchNotification)({
+            phone: farmerPhone,
+            template: 'paymentReceipt',
+            values: { weight, payout: totalPayout.toLocaleString('en-IN') }
+        });
         return res.status(200).json({
             success: true,
             message: 'Quality inspection approved and receipt issued successfully.',
@@ -711,7 +851,8 @@ async function createQualityInspection(req, res) {
                     inspectorId,
                     issuedAt: new Date().toISOString()
                 },
-                mockSms: mockSmsPayload
+                mockSms: mockSmsPayload,
+                notifications: notificationResults
             },
             isMock: !(0, prisma_1.isDbActive)()
         });

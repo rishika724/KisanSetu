@@ -22,16 +22,15 @@ enum BookingStatus {
 }
 
 model Farmer {
-  id              String    @id @default(cuid())
+  id              String    @id @default(uuid())
   aadhaarHash     String    @unique
   name            String
-  phone           String
+  phoneno         String    @unique
   language        String    @default("hi")
-  landSize        Float
-  locationVillage String
+  landSize        Float?
+  locationVillage String?
   bookings        Booking[]
   createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
 }
 
 model ProcurementCenter {

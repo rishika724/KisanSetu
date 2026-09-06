@@ -137,35 +137,35 @@ export const BASELINE_COMMAND_STATE: CommandState = {
   cropDistribution: [
     {
       cropName: 'Wheat',
-      hindiName: 'गेहूं (Wheat)',
+      hindiName: 'गेहूं',
       volumeTons: 7120,
       payoutCr: 16.19,
       percentage: 48,
-      color: '#334155' // Slate primary 700
+      color: '#334155'
     },
     {
       cropName: 'Paddy',
-      hindiName: 'धान (Paddy Basmati)',
+      hindiName: 'धान',
       volumeTons: 4740,
       payoutCr: 11.0,
       percentage: 32,
-      color: '#047857' // Muted forest green
+      color: '#047857'
     },
     {
       cropName: 'Pulses',
-      hindiName: 'चना (Gram / Chana)',
+      hindiName: 'चना',
       volumeTons: 1930,
       payoutCr: 4.28,
       percentage: 13,
-      color: '#d97706' // Amber
+      color: '#d97706'
     },
     {
       cropName: 'Mustard',
-      hindiName: 'सरसों (Mustard)',
+      hindiName: 'सरसों',
       volumeTons: 1030,
       payoutCr: 2.25,
       percentage: 7,
-      color: '#0284c7' // Subtle Cyan/Blue
+      color: '#0284c7'
     }
   ],
   isOfflineSimulated: false,

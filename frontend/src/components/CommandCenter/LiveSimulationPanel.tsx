@@ -16,6 +16,7 @@ import {
   Building2,
   Sparkles,
   ArrowRight
+  , MessageSquare
 } from 'lucide-react';
 import { CommandState } from './MockDataGenerator';
 
@@ -25,6 +26,7 @@ interface LiveSimulationPanelProps {
   state: CommandState;
   onSimulateSurge: () => void;
   onTriggerSms: () => void;
+  onSendTestNotification: () => void;
   onToggleOffline: () => void;
   onReset: () => void;
   onDismissSms: () => void;
@@ -36,6 +38,7 @@ export function LiveSimulationPanel({
   state,
   onSimulateSurge,
   onTriggerSms,
+  onSendTestNotification,
   onToggleOffline,
   onReset,
   onDismissSms
@@ -138,6 +141,15 @@ export function LiveSimulationPanel({
           </div>
 
           {/* Trigger 3: Toggle Offline Mode Test */}
+          <div className="p-4 bg-slate-50 rounded-2xl border-2 border-slate-200 space-y-3">
+            <span className="text-xs font-black uppercase tracking-wider text-slate-500 block">परीक्षण 3: किसान सूचना चैनल (Test Delivery)</span>
+            <button type="button" onClick={onSendTestNotification} className="w-full flex min-h-[58px] items-center gap-3.5 rounded-2xl border-2 border-slate-700 bg-slate-900 p-4 text-left text-base font-black text-white">
+              <MessageSquare className="h-7 w-7 text-emerald-400" />
+              <span><span className="block leading-tight">Send Test SMS / WhatsApp</span><span className="text-[11px] font-medium text-slate-300">Demo delivery with visible channel results</span></span>
+            </button>
+          </div>
+
+          {/* Trigger 4: Toggle Offline Mode Test */}
           <div className="p-4 bg-slate-50 rounded-2xl border-2 border-slate-200 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-slate-500">

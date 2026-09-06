@@ -198,7 +198,7 @@ export function QualityInspectionForm({
                 <div>
                   <span className="text-xs font-bold uppercase text-slate-500">किसान व स्लॉट (Farmer & Slot)</span>
                   <div className="text-base font-black text-slate-900">
-                    {activeVehicle.farmer?.name || 'किसान'} • {activeVehicle.farmer?.phone}
+                    {activeVehicle.farmer?.name || 'किसान'} • {activeVehicle.farmer?.phoneno}
                   </div>
                   <div className="text-xs text-slate-600 font-semibold">
                     भूमि: {activeVehicle.farmer?.landSize ?? '4.5'} एकड़ • स्लॉट: {activeVehicle.slot?.timeWindow}

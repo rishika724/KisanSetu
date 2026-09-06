@@ -12,6 +12,7 @@ import {
   generateMockSmsNotification,
   toggleOfflineModeSimulation
 } from './MockDataGenerator';
+import { sendTestNotificationApi } from '../../lib/api';
 import {
   Sliders,
   Smartphone,
@@ -59,6 +60,16 @@ export function KisanSetuCommandCenter() {
   const handleTriggerSms = () => {
     setState((prev) => generateMockSmsNotification(prev));
     playChime(1100);
+  };
+
+  const handleSendTestNotification = async () => {
+    try {
+      const results = await sendTestNotificationApi({ phone: '9876543210', preferences: { sms: true, whatsapp: true } });
+      setToastAlert(`Demo notifications sent: ${results.map((result) => result.channel.toUpperCase()).join(' + ')}`);
+    } catch (error: any) {
+      setToastAlert(error.message || 'Notification delivery failed');
+    }
+    setTimeout(() => setToastAlert(null), 6000);
   };
 
   const handleToggleOffline = () => {
@@ -212,6 +223,7 @@ export function KisanSetuCommandCenter() {
         state={state}
         onSimulateSurge={handleSimulateSurge}
         onTriggerSms={handleTriggerSms}
+        onSendTestNotification={handleSendTestNotification}
         onToggleOffline={handleToggleOffline}
         onReset={handleReset}
         onDismissSms={handleDismissSms}

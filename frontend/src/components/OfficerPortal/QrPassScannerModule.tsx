@@ -498,7 +498,7 @@ export function QrPassScannerModule({
                     {scannedData.farmer?.name || 'किसान (Farmer)'}
                   </h4>
                   <p className="text-sm font-bold text-slate-600">
-                    फ़ोन: {scannedData.farmer?.phone || 'N/A'} • {scannedData.farmer?.locationVillage || 'Village N/A'}
+                    फ़ोन: {scannedData.farmer?.phoneno || 'N/A'} • {scannedData.farmer?.locationVillage || 'Village N/A'}
                   </p>
                 </div>
                 <div className="px-3 py-1.5 bg-emerald-100 border border-emerald-400 text-emerald-950 rounded-xl text-xs font-black">

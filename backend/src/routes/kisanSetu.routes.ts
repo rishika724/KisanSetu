@@ -10,7 +10,10 @@ import {
   checkGeofenceStatus,
   generateOfflineTokenEndpoint,
   getAllBookings,
-  createQualityInspection
+  createQualityInspection,
+  registerFarmer,
+  verifyFarmer,
+  sendNotification
 } from '../controllers/kisanSetu.controller';
 
 const router = Router();
@@ -38,6 +41,9 @@ router.post('/inspections', createQualityInspection);
 
 // Helper for UI demo selection
 router.get('/farmers', getFarmers);
+router.post('/farmers/register', registerFarmer);
+router.get('/farmers/verify', verifyFarmer);
+router.post('/notify', sendNotification);
 
 // Dynamic Capacity & Queue Engine
 router.get('/queue/capacity', getQueueCapacity);

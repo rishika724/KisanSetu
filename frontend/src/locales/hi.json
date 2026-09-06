@@ -1,0 +1,34 @@
+{
+  "farmerRegistration": {
+    "title": "किसान पंजीकरण",
+    "subtitle": "बुकिंग जारी रखने के लिए अपनी जानकारी दर्ज करें।",
+    "fullName": "पूरा नाम",
+    "mobile": "मोबाइल नंबर",
+    "village": "गांव",
+    "crop": "मुख्य फसल",
+    "quantity": "अनुमानित मात्रा (क्विंटल)",
+    "vehicle": "वाहन का प्रकार",
+    "requestOtp": "ओटीपी भेजें",
+    "verifyOtp": "ओटीपी सत्यापित करें",
+    "otpLabel": "ओटीपी",
+    "otpHint": "प्रोटोटाइप ओटीपी: 123456",
+    "verified": "सत्यापित",
+    "mockId": "किसान आईडी",
+    "registrationRequired": "पंजीकरण सत्यापित करें और सभी जानकारी भरें।"
+  },
+  "adminControls": {
+    "title": "यातायात नियंत्रण",
+    "breakdown": "उपकरण खराबी मोड",
+    "emergency": "आपातकालीन लेन",
+    "reroute": "वाहन मार्ग बदलें",
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय"
+  },
+  "tabs": {
+    "booking": "स्लॉट बुकिंग",
+    "offlinePass": "ऑफलाइन पास",
+    "queueStatus": "कतार स्थिति",
+    "gateScanner": "गेट सत्यापन",
+    "howItWorks": "जानकारी"
+  }
+}

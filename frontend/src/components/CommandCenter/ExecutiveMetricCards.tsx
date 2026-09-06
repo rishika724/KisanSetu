@@ -129,10 +129,10 @@ export function ExecutiveMetricCards({ metrics, surgeActive }: ExecutiveMetricCa
             </span>
             <span className="text-xs font-black uppercase px-2 py-0.5 rounded-lg border bg-slate-50">
               {metrics.congestionStatus === 'SMOOTH'
-                ? 'सामान्य / सुगम (Normal)'
+                ? 'सुगम'
                 : metrics.congestionStatus === 'MODERATE'
                 ? 'मध्यम संकुलन'
-                : 'अत्यधिक भीड़ (Congested)'}
+                : 'अत्यधिक संकुलन'}
             </span>
           </div>
           <p className="text-xs font-semibold text-slate-600 mt-1">

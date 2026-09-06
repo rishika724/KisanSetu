@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language, TranslationDict, translations } from '../lib/translations';
 
 export interface LanguageOption {
-  code: string;
+  code: Language;
   label: string;
   nativeName: string;
 }
@@ -12,7 +12,13 @@ export interface LanguageOption {
 export const SUPPORTED_LANGUAGES: LanguageOption[] = [
   { code: 'hi', label: 'Hindi', nativeName: 'हिंदी' },
   { code: 'en', label: 'English', nativeName: 'English' },
-  { code: 'te', label: 'Telugu', nativeName: 'తెలుగు' }
+  { code: 'pa', label: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ' },
+  { code: 'mr', label: 'Marathi', nativeName: 'मराठी' },
+  { code: 'te', label: 'Telugu', nativeName: 'తెలుగు' },
+  { code: 'ta', label: 'Tamil', nativeName: 'தமிழ்' },
+  { code: 'bn', label: 'Bengali', nativeName: 'বাংলা' },
+  { code: 'gu', label: 'Gujarati', nativeName: 'ગુજરાતી' },
+  { code: 'kn', label: 'Kannada', nativeName: 'ಕನ್ನಡ' }
 ];
 
 interface LanguageContextType {
@@ -33,11 +39,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       const saved =
         (localStorage.getItem('kisan_setu_preferred_language') as Language) ||
         (localStorage.getItem('kisan_setu_lang') as Language);
-      if (saved === 'hi' || saved === 'en' || saved === 'te') {
+      if (SUPPORTED_LANGUAGES.some((option) => option.code === saved)) {
         setLanguageState(saved);
       }
     }
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
@@ -48,19 +58,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleLanguage = () => {
-    const nextOrder: Record<Language, Language> = {
-      hi: 'en',
-      en: 'te',
-      te: 'hi'
-    };
-    setLanguage(nextOrder[language] || 'hi');
+    const languageOrder: Language[] = ['hi', 'en', 'pa', 'mr', 'te', 'ta', 'bn', 'gu', 'kn'];
+    const currentIndex = languageOrder.indexOf(language);
+    const nextLanguage = languageOrder[(currentIndex + 1) % languageOrder.length];
+    setLanguage(nextLanguage);
   };
+
+  const activeTranslations = translations[language] || translations.hi || translations.en;
 
   return (
     <LanguageContext.Provider
       value={{
         language,
-        t: translations[language] || translations.hi,
+        t: activeTranslations,
         toggleLanguage,
         setLanguage,
         supportedLanguages: SUPPORTED_LANGUAGES

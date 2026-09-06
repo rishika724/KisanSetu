@@ -31,10 +31,14 @@ export interface FarmerItem {
   id: string;
   aadhaarHash: string;
   name: string;
-  phone: string;
+  phoneno: string;
   language: string;
-  landSize: number;
-  locationVillage: string;
+  landSize?: number;
+  locationVillage?: string;
+  createdAt?: string;
+  primaryCrop?: string;
+  approximateQuantity?: number;
+  vehicleType?: string;
 }
 
 export interface BookingResponseData {
@@ -57,6 +61,7 @@ export interface BookingResponseData {
     issuedAt: string;
     algorithm: string;
   };
+  notifications?: Array<{ channel: 'sms' | 'whatsapp'; delivered: boolean; simulated: boolean; message: string; sentAt: string }>;
 }
 
 export interface VerifiedTokenData {
@@ -70,7 +75,7 @@ export interface VerifiedTokenData {
   farmer: {
     id: string;
     name: string;
-    phone: string;
+    phoneno: string;
     aadhaarHash: string;
     locationVillage: string;
     landSize: number;
@@ -148,15 +153,15 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
     tokenHash: '5A7E298B10C34DF98A00B74239ED3C19F218902B73479AF02BC8912E4A9C1032',
     status: 'MANDI_GATE',
     vehicleType: 'TRACTOR',
-    cropType: 'गेहूं (Wheat)',
+    cropType: 'Wheat',
     estimatedWeight: 45.5,
     createdAt: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
     farmer: {
       id: 'farmer-01',
-      name: 'रामेश कुमार (Ramesh Kumar)',
-      phone: '+91 98765 43210',
+      name: 'Ramesh Kumar',
+      phoneno: '9876543210',
       aadhaarHash: '7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069',
-      locationVillage: 'रनपुर (Ranpur, Kota)',
+      locationVillage: 'Ranpur',
       landSize: 4.5,
       language: 'hi'
     },
@@ -165,7 +170,7 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
       timeWindow: '09:00-10:00'
     },
     center: {
-      name: 'कोटा कृषि उपज मंडी (Kota Krishi Upaj Mandi)',
+      name: 'Kota Mandi',
       weighbridgeCount: 4
     },
     qualityInspection: null
@@ -175,15 +180,15 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
     tokenHash: 'B82C10F98934EBA10984E290BA55E1C389AFB1238910ABDE542890C12389A120',
     status: 'STAGING',
     vehicleType: 'TRUCK',
-    cropType: 'धान (Paddy Basmati)',
+    cropType: 'Paddy',
     estimatedWeight: 82.0,
     createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
     farmer: {
       id: 'farmer-02',
-      name: 'बलविंदर सिंह (Balwinder Singh)',
-      phone: '+91 98123 45678',
+      name: 'Balwinder Singh',
+      phoneno: '9812345678',
       aadhaarHash: '9c56cc51b374c3ba189210d5b55476f276081418b59e4913d3725ef4a504acaf',
-      locationVillage: 'नीलोखेड़ी (Nilokheri, Karnal)',
+      locationVillage: 'Nilokheri',
       landSize: 12.0,
       language: 'hi'
     },
@@ -192,7 +197,7 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
       timeWindow: '10:00-11:00'
     },
     center: {
-      name: 'कोटा कृषि उपज मंडी (Kota Krishi Upaj Mandi)',
+      name: 'Kota Mandi',
       weighbridgeCount: 4
     },
     qualityInspection: null
@@ -202,15 +207,15 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
     tokenHash: 'E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855',
     status: 'MANDI_GATE',
     vehicleType: 'BULLOCK_CART',
-    cropType: 'चना (Gram/Chana)',
+    cropType: 'Pulses',
     estimatedWeight: 24.5,
     createdAt: new Date(Date.now() - 55 * 60 * 1000).toISOString(),
     farmer: {
       id: 'farmer-03',
-      name: 'सुरेश पटेल (Suresh Patel)',
-      phone: '+91 97555 23456',
+      name: 'Suresh Patel',
+      phoneno: '9755523456',
       aadhaarHash: 'cb4325a74eab88b773e610f2d9c1932d04b901ac57e07d4803738b008f34b47a',
-      locationVillage: 'बैरसिया (Berasia, Bhopal)',
+      locationVillage: 'Berasia',
       landSize: 7.2,
       language: 'hi'
     },
@@ -219,7 +224,7 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
       timeWindow: '08:00-09:00'
     },
     center: {
-      name: 'कोटा कृषि उपज मंडी (Kota Krishi Upaj Mandi)',
+      name: 'Kota Mandi',
       weighbridgeCount: 4
     },
     qualityInspection: null
@@ -229,15 +234,15 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
     tokenHash: 'F128A948C721098BAFE34901C9823489ABCF341908234890ABFE8923489012AB',
     status: 'COMPLETED',
     vehicleType: 'TRACTOR',
-    cropType: 'सरसों (Mustard)',
+    cropType: 'Mustard',
     estimatedWeight: 52.0,
     createdAt: new Date(Date.now() - 110 * 60 * 1000).toISOString(),
     farmer: {
       id: 'farmer-01',
-      name: 'रामेश कुमार (Ramesh Kumar)',
-      phone: '+91 98765 43210',
+      name: 'Ramesh Kumar',
+      phoneno: '9876543210',
       aadhaarHash: '7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069',
-      locationVillage: 'रनपुर (Ranpur, Kota)',
+      locationVillage: 'Ranpur',
       landSize: 4.5,
       language: 'hi'
     },
@@ -246,7 +251,7 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
       timeWindow: '08:00-09:00'
     },
     center: {
-      name: 'कोटा कृषि उपज मंडी (Kota Krishi Upaj Mandi)',
+      name: 'Kota Mandi',
       weighbridgeCount: 4
     },
     qualityInspection: {
@@ -265,15 +270,15 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
     tokenHash: 'AA11BB22CC33DD44EE55FF6600112233445566778899AABBCCDDEEFF00112233',
     status: 'BOOKED',
     vehicleType: 'TRUCK',
-    cropType: 'गेहूं (Wheat)',
+    cropType: 'Wheat',
     estimatedWeight: 90.0,
     createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
     farmer: {
       id: 'farmer-02',
-      name: 'बलविंदर सिंह (Balwinder Singh)',
-      phone: '+91 98123 45678',
+      name: 'Balwinder Singh',
+      phoneno: '9812345678',
       aadhaarHash: '9c56cc51b374c3ba189210d5b55476f276081418b59e4913d3725ef4a504acaf',
-      locationVillage: 'नीलोखेड़ी (Nilokheri, Karnal)',
+      locationVillage: 'Nilokheri',
       landSize: 12.0,
       language: 'hi'
     },
@@ -282,7 +287,7 @@ const DEFAULT_MOCK_BOOKINGS: VerifiedTokenData[] = [
       timeWindow: '11:00-12:00'
     },
     center: {
-      name: 'कोटा कृषि उपज मंडी (Kota Krishi Upaj Mandi)',
+      name: 'Kota Mandi',
       weighbridgeCount: 4
     },
     qualityInspection: null
@@ -350,12 +355,41 @@ export async function fetchFarmers(): Promise<FarmerItem[]> {
   return json.data || [];
 }
 
+export async function registerFarmerApi(payload: {
+  name: string;
+  phoneno: string;
+  aadhaarNumber?: string;
+  village?: string;
+  crop?: string;
+  quantity?: number;
+  vehicleType?: string;
+}): Promise<FarmerItem> {
+  const res = await fetch(`${API_BASE}/farmers/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) throw new Error(json.message || 'Farmer registration failed');
+  return json.data;
+}
+
+export async function verifyFarmerApi(phoneno: string): Promise<FarmerItem | null> {
+  const res = await fetch(`${API_BASE}/farmers/verify?phoneno=${encodeURIComponent(phoneno)}`, {
+    cache: 'no-store'
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'Farmer verification failed');
+  return json.exists ? json.data : null;
+}
+
 export async function createBookingApi(payload: {
-  farmerId?: string;
+  farmerId: string;
   slotId: string;
   vehicleType: string;
   cropType: string;
   estimatedWeight: number;
+  notificationPreferences?: { sms: boolean; whatsapp: boolean };
 }): Promise<BookingResponseData> {
   const res = await fetch(`${API_BASE}/bookings`, {
     method: 'POST',
@@ -367,6 +401,20 @@ export async function createBookingApi(payload: {
     throw new Error(json.message || 'Booking creation failed');
   }
   return json.data;
+}
+
+export async function sendTestNotificationApi(payload: {
+  phone: string;
+  preferences: { sms: boolean; whatsapp: boolean };
+}): Promise<Array<{ channel: 'sms' | 'whatsapp'; delivered: boolean; simulated: boolean; message: string; sentAt: string }>> {
+  const res = await fetch(`${API_BASE}/notify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...payload, template: 'bookingConfirmation', values: { name: 'Demo Farmer', mandiName: 'Kota Mandi', date: 'today', time: '10:00', token: 'DEMO-TOKEN', passLink: 'http://localhost:3000/?tab=offlinePass' } })
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) throw new Error(json.message || 'Notification test failed');
+  return json.data || [];
 }
 
 export async function verifyTokenApi(tokenHash: string): Promise<VerifiedTokenData> {
@@ -402,7 +450,7 @@ export async function verifyTokenApi(tokenHash: string): Promise<VerifiedTokenDa
       farmer: {
         id: 'farmer-demo',
         name: 'रामेश कुमार (Ramesh Kumar)',
-        phone: '+91 98765 43210',
+        phoneno: '9876543210',
         aadhaarHash: '7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069',
         locationVillage: 'रनपुर (Ranpur, Kota)',
         landSize: 4.5,
@@ -557,7 +605,7 @@ export async function submitQualityInspectionApi(
   saveStoredMockBookings(updatedList);
 
   const farmerName = currentBooking?.farmer?.name || 'रामेश कुमार (Ramesh Kumar)';
-  const farmerPhone = currentBooking?.farmer?.phone || '+91 98765 43210';
+  const farmerPhone = currentBooking?.farmer?.phoneno || '9876543210';
 
   return {
     inspection: inspectionRecord,

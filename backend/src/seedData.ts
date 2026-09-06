@@ -1,39 +1,49 @@
 import crypto from 'crypto';
 
-export const seedFarmers = [
+export interface SeedFarmer {
+  id: string;
+  aadhaarHash: string;
+  name: string;
+  phoneno: string;
+  language: string;
+  landSize?: number;
+  locationVillage?: string;
+}
+
+export const seedFarmers: SeedFarmer[] = [
   {
     id: 'farmer-01',
     aadhaarHash: crypto.createHash('sha256').update('AADHAAR_9876_5432_1098').digest('hex'),
-    name: 'रामेश कुमार (Ramesh Kumar)',
-    phone: '+91 98765 43210',
+    name: 'Ramesh Kumar',
+    phoneno: '9876543210',
     language: 'hi',
     landSize: 4.5,
-    locationVillage: 'रनपुर (Ranpur, Kota)'
+    locationVillage: 'Ranpur'
   },
   {
     id: 'farmer-02',
     aadhaarHash: crypto.createHash('sha256').update('AADHAAR_8765_4321_0987').digest('hex'),
-    name: 'बलविंदर सिंह (Balwinder Singh)',
-    phone: '+91 98123 45678',
+    name: 'Balwinder Singh',
+    phoneno: '9812345678',
     language: 'hi',
     landSize: 12.0,
-    locationVillage: 'नीलोखेड़ी (Nilokheri, Karnal)'
+    locationVillage: 'Nilokheri'
   },
   {
     id: 'farmer-03',
     aadhaarHash: crypto.createHash('sha256').update('AADHAAR_7654_3210_9876').digest('hex'),
-    name: 'सुरेश पटेल (Suresh Patel)',
-    phone: '+91 97555 23456',
+    name: 'Suresh Patel',
+    phoneno: '9755523456',
     language: 'hi',
     landSize: 7.2,
-    locationVillage: 'बैरसिया (Berasia, Bhopal)'
+    locationVillage: 'Berasia'
   }
 ];
 
 export const seedCenters = [
   {
     id: 'center-01',
-    name: 'कोटा कृषि उपज मंडी (Kota Krishi Upaj Mandi)',
+    name: 'Kota Mandi',
     locationLat: 25.18,
     locationLng: 75.83,
     weighbridgeCount: 4,
@@ -41,7 +51,7 @@ export const seedCenters = [
   },
   {
     id: 'center-02',
-    name: 'करनाल मुख्य अनाज मंडी (Karnal Grain Mandi)',
+    name: 'Karnal Grain Mandi',
     locationLat: 29.68,
     locationLng: 76.99,
     weighbridgeCount: 6,
@@ -49,7 +59,7 @@ export const seedCenters = [
   },
   {
     id: 'center-03',
-    name: 'भोपाल करोंद कृषि मंडी (Bhopal Karond Mandi)',
+    name: 'Bhopal Karond Mandi',
     locationLat: 23.30,
     locationLng: 77.40,
     weighbridgeCount: 5,

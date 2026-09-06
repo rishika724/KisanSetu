@@ -1,0 +1,34 @@
+{
+  "farmerRegistration": {
+    "title": "Farmer Registration",
+    "subtitle": "Enter your details to continue booking.",
+    "fullName": "Full Name",
+    "mobile": "Mobile Number",
+    "village": "Village",
+    "crop": "Primary Crop",
+    "quantity": "Estimated Quantity (quintals)",
+    "vehicle": "Vehicle Type",
+    "requestOtp": "Send OTP",
+    "verifyOtp": "Verify OTP",
+    "otpLabel": "OTP",
+    "otpHint": "Prototype OTP: 123456",
+    "verified": "Verified",
+    "mockId": "Farmer ID",
+    "registrationRequired": "Verify registration and complete all profile fields."
+  },
+  "adminControls": {
+    "title": "Traffic Control",
+    "breakdown": "Equipment breakdown mode",
+    "emergency": "Emergency lane",
+    "reroute": "Reroute vehicles",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "tabs": {
+    "booking": "Slot Booking",
+    "offlinePass": "Offline Pass",
+    "queueStatus": "Queue Status",
+    "gateScanner": "Gate Scanner",
+    "howItWorks": "How It Works"
+  }
+}

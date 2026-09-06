@@ -19,6 +19,9 @@ router.patch('/bookings/:id/status', kisanSetu_controller_1.updateBookingStatus)
 router.post('/inspections', kisanSetu_controller_1.createQualityInspection);
 // Helper for UI demo selection
 router.get('/farmers', kisanSetu_controller_1.getFarmers);
+router.post('/farmers/register', kisanSetu_controller_1.registerFarmer);
+router.get('/farmers/verify', kisanSetu_controller_1.verifyFarmer);
+router.post('/notify', kisanSetu_controller_1.sendNotification);
 // Dynamic Capacity & Queue Engine
 router.get('/queue/capacity', kisanSetu_controller_1.getQueueCapacity);
 // Geofenced Buffer Staging State

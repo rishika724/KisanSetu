@@ -13,7 +13,7 @@ exports.seedFarmers = [
         id: 'farmer-01',
         aadhaarHash: crypto_1.default.createHash('sha256').update('AADHAAR_9876_5432_1098').digest('hex'),
         name: 'रामेश कुमार (Ramesh Kumar)',
-        phone: '+91 98765 43210',
+        phoneno: '9876543210',
         language: 'hi',
         landSize: 4.5,
         locationVillage: 'रनपुर (Ranpur, Kota)'
@@ -22,7 +22,7 @@ exports.seedFarmers = [
         id: 'farmer-02',
         aadhaarHash: crypto_1.default.createHash('sha256').update('AADHAAR_8765_4321_0987').digest('hex'),
         name: 'बलविंदर सिंह (Balwinder Singh)',
-        phone: '+91 98123 45678',
+        phoneno: '9812345678',
         language: 'hi',
         landSize: 12.0,
         locationVillage: 'नीलोखेड़ी (Nilokheri, Karnal)'
@@ -31,7 +31,7 @@ exports.seedFarmers = [
         id: 'farmer-03',
         aadhaarHash: crypto_1.default.createHash('sha256').update('AADHAAR_7654_3210_9876').digest('hex'),
         name: 'सुरेश पटेल (Suresh Patel)',
-        phone: '+91 97555 23456',
+        phoneno: '9755523456',
         language: 'hi',
         landSize: 7.2,
         locationVillage: 'बैरसिया (Berasia, Bhopal)'
