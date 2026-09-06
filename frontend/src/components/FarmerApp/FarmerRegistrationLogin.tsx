@@ -24,6 +24,7 @@ import {
   KeyRound,
   Check
 } from 'lucide-react';
+import { VoiceDictationButton } from '../VoiceAssistant/VoiceDictationButton';
 
 const PRESET_VILLAGES = [
   'Ranpur',
@@ -237,9 +238,18 @@ export function FarmerRegistrationLogin({ onSuccess }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {/* Full Name */}
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-slate-900">
-            {t.farmerRegistration.fullName}
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-bold text-slate-900">
+              {t.farmerRegistration.fullName}
+            </label>
+            <VoiceDictationButton
+              onDictated={(text) => {
+                setName(text);
+                setIsVerified(false);
+              }}
+              fieldLabel={t.farmerRegistration.fullName}
+            />
+          </div>
           <input
             type="text"
             value={name}

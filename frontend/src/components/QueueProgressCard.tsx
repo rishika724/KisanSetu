@@ -15,8 +15,7 @@ import {
   ShieldCheck,
   Droplets,
   Scale,
-  Truck,
-  FileText,
+  FileCheck2,
   DollarSign,
   ArrowDownCircle,
   CheckCircle2,
@@ -25,10 +24,13 @@ import {
   Flame,
   QrCode,
   Users,
-  ChevronRight,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Printer
 } from 'lucide-react';
+import { DigitalReceiptModal } from './DigitalReceiptModal';
+import { useVoiceAssistant } from '../context/VoiceAssistantContext';
+import { PlayAudioButton } from './VoiceAssistant/PlayAudioButton';
 
 interface QueueProgressCardProps {
   initialStage?: number;
@@ -38,6 +40,7 @@ interface QueueProgressCardProps {
 export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
   const { t, language } = useLanguage();
   const sync = useSyncStore();
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   const activeBooking: SyncBooking | null =
     sync.bookings.find((b) => b.id === bookingId) || sync.activeBooking || sync.bookings[0];
@@ -56,6 +59,17 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
   const vehiclesAhead = Math.max(0, queuePosition - 1);
   const estimatedWaitMin = vehiclesAhead * 12 + (currentStageNumber <= 2 ? 15 : 5);
 
+  const { activeHighlightKey } = useVoiceAssistant();
+  const isHighlighted = activeHighlightKey === 'queue-tracker-card';
+
+  const queueSpokenText = activeBooking
+    ? language === 'te'
+      ? `లైవ్ క్యూ స్థితి: మీ టోకెన్ సంఖ్య ${activeBooking.tokenNumber}. మీ స్థానం #${currentStageNumber >= 8 ? 'పూర్తయింది' : queuePosition}. మీ ముందు ${vehiclesAhead} వాహనాలు ఉన్నాయి. అంచనా ప్రతీక్షా సమయం ${currentStageNumber >= 8 ? '0' : estimatedWaitMin} నిమిషాలు. కేటాయించిన లేన్ ${activeBooking.lane || 'లేన్ 1'}.`
+      : language === 'hi'
+      ? `लाइव कतार स्थिति: आपका टोकन नंबर ${activeBooking.tokenNumber} है। कतार में आपका स्थान #${currentStageNumber >= 8 ? 'पूर्ण' : queuePosition} है। आपके आगे ${vehiclesAhead} वाहन हैं। अनुमानित प्रतीक्षा समय ${currentStageNumber >= 8 ? '0' : estimatedWaitMin} मिनट है। आवंटित लेन ${activeBooking.lane || 'लेन 1'} है।`
+      : `Live Queue Status: Your token is ${activeBooking.tokenNumber}. You are at position #${currentStageNumber >= 8 ? 'Done' : queuePosition} in line with ${vehiclesAhead} vehicles ahead. Estimated wait time is ${currentStageNumber >= 8 ? '0' : estimatedWaitMin} minutes in ${activeBooking.lane || 'Lane 1'}.`
+    : t.voiceAssistant.cmdCheckQueue;
+
   const stageIcons = [
     CalendarCheck,
     ShieldCheck,
@@ -64,7 +78,7 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
     ArrowDownCircle,
     Scale,
     DollarSign,
-    FileText
+    FileCheck2
   ];
 
   const handleAdvanceStage = () => {
@@ -80,6 +94,30 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
   };
 
   const traffic = sync.trafficControls;
+
+  const isCompleted = currentStageNumber >= 8;
+
+  // Localized helper strings
+  const localizedActiveBadge =
+    language === 'te' ? 'క్రియాశీలం' : language === 'hi' ? 'सक्रिय' : 'Active';
+  const localizedDoneBadge =
+    language === 'te' ? 'పూర్తయింది' : language === 'hi' ? 'पूर्ण' : 'Done';
+  const localizedPendingBadge =
+    language === 'te' ? 'వేచి ఉంది' : language === 'hi' ? 'ఆగామి' : 'Pending';
+  const localizedNextStageBtn =
+    language === 'te' ? 'తదుపరి దశకు వెళ్లండి' : language === 'hi' ? 'अगला चरण बढ़ाएं' : 'Advance Next Stage';
+  const localizedQueueTableTitle =
+    language === 'te' ? 'మండి యార్డ్ క్రియాశీల క్యూ జాబితా' : language === 'hi' ? 'मंडी यार्ड सक्रिय कतार सूची' : 'Active Mandi Yard Queue List';
+  const localizedVehiclesInLine =
+    language === 'te' ? 'వాహనాలు వేచి ఉన్నాయి' : language === 'hi' ? 'वाहन कतार में' : 'Vehicles in Line';
+  const localizedPosHeader =
+    language === 'te' ? 'క్యూ' : language === 'hi' ? 'कतार' : 'Pos';
+  const localizedCurrentStageHeader =
+    language === 'te' ? 'ప్రస్తుత దశ' : language === 'hi' ? 'वर्तमान चरण' : 'Current Stage';
+  const localizedYou =
+    language === 'te' ? 'మీరు' : language === 'hi' ? 'आप' : 'You';
+  const localizedCompletedStatus =
+    language === 'te' ? 'ప్రక్రియ పూర్తయింది' : language === 'hi' ? 'प्रक्रिया संपन्न' : 'Completed';
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -113,7 +151,11 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
       )}
 
       {/* Main Queue Dashboard Card */}
-      <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-md p-6 sm:p-8 space-y-6">
+      <div className={`bg-white rounded-3xl border-2 shadow-md p-6 sm:p-8 space-y-6 transition-all duration-300 ${
+          isHighlighted
+            ? 'ring-4 ring-emerald-500 shadow-2xl scale-[1.01] border-emerald-500 bg-emerald-50/20'
+            : 'border-slate-300'
+        }`}>
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
           <div>
@@ -128,19 +170,26 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
             </p>
           </div>
 
-          {activeBooking && (
-            <div className="flex items-center space-x-3 p-3.5 bg-slate-900 text-white rounded-2xl self-start border border-slate-700 shadow-sm">
-              <QrCode className="w-6 h-6 text-emerald-400" />
-              <div>
-                <span className="text-[10px] text-slate-400 font-bold block leading-none uppercase">
-                  {t.digitalPass.tokenNumber}
-                </span>
-                <span className="text-xl font-black font-mono leading-tight text-white">
-                  {activeBooking.tokenNumber}
-                </span>
+          <div className="flex flex-wrap items-center gap-3 self-start">
+            <PlayAudioButton
+              textToSpeak={queueSpokenText}
+              highlightKey="queue-tracker-card"
+            />
+
+            {activeBooking && (
+              <div className="flex items-center space-x-3 p-3.5 bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-sm">
+                <QrCode className="w-6 h-6 text-emerald-400" />
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold block leading-none uppercase">
+                    {t.digitalPass.tokenNumber}
+                  </span>
+                  <span className="text-xl font-black font-mono leading-tight text-white">
+                    {activeBooking.tokenNumber}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Real-Time Live Queue Numbers */}
@@ -155,7 +204,7 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
             </div>
             <p className="text-xs font-semibold text-slate-600">
               {currentStageNumber >= 8
-                ? (language === 'hi' ? 'प्रक्रिया संपन्न' : 'Completed')
+                ? localizedCompletedStatus
                 : `${vehiclesAhead} ${t.queueTracker.vehiclesAhead}`}
             </p>
           </div>
@@ -191,6 +240,50 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
           </div>
         </div>
 
+        {/* PROMINENT DIGITAL RECEIPT ACCESS COMPONENT NEAR LIVE QUEUE TRACKER */}
+        <div className="bg-gradient-to-r from-emerald-900 via-slate-900 to-slate-900 text-white rounded-3xl p-5 sm:p-6 border-2 border-emerald-500/40 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-4 text-center sm:text-left">
+            <div className="p-3 bg-emerald-500/20 border border-emerald-400/30 rounded-2xl text-emerald-400 shrink-0">
+              <FileCheck2 className="w-8 h-8" />
+            </div>
+            <div>
+              <div className="flex items-center justify-center sm:justify-start space-x-2">
+                <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
+                  {t.digitalReceipt.govtSeal}
+                </span>
+                {isCompleted && (
+                  <span className="px-2 py-0.5 bg-emerald-500 text-slate-950 font-black text-[10px] rounded uppercase">
+                    {localizedDoneBadge}
+                  </span>
+                )}
+              </div>
+              <h3 className="text-lg sm:text-xl font-black tracking-tight mt-0.5">
+                {t.digitalReceipt.title}
+              </h3>
+              <p className="text-xs text-slate-300 font-medium">
+                {isCompleted
+                  ? t.digitalReceipt.dbtStatus
+                  : t.digitalReceipt.subtitle}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setIsReceiptOpen(true)}
+              className={`w-full sm:w-auto px-5 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center space-x-2 transition-all shadow-md active:scale-98 min-h-[48px] ${
+                isCompleted
+                  ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 ring-2 ring-emerald-300'
+                  : 'bg-emerald-800 hover:bg-emerald-700 text-white border border-emerald-500/50'
+              }`}
+            >
+              <FileCheck2 className="w-4 h-4" />
+              <span>{isCompleted ? t.digitalReceipt.viewReceipt : t.digitalReceipt.previewReceipt}</span>
+            </button>
+          </div>
+        </div>
+
         {/* 8-Stage Visual Tracker */}
         <div className="space-y-4 pt-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -203,7 +296,7 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
                 onClick={handleAdvanceStage}
                 className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 shadow-xs min-h-[44px]"
               >
-                <span>{language === 'hi' ? 'अगला चरण बढ़ाएं' : 'Advance Next Stage'}</span>
+                <span>{localizedNextStageBtn}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -253,10 +346,10 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
                       }`}
                     >
                       {isCurrent
-                        ? (language === 'hi' ? 'सक्रिय' : 'Active')
+                        ? localizedActiveBadge
                         : isPast
-                        ? (language === 'hi' ? 'पूर्ण' : 'Done')
-                        : (language === 'hi' ? 'आगामी' : 'Pending')}
+                        ? localizedDoneBadge
+                        : localizedPendingBadge}
                     </span>
                   </div>
 
@@ -276,10 +369,10 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 text-sm font-black text-slate-900">
               <Users className="w-4 h-4 text-emerald-700" />
-              <span>{language === 'hi' ? 'मंडी यार्ड सक्रिय कतार सूची' : 'Active Mandi Yard Queue List'}</span>
+              <span>{localizedQueueTableTitle}</span>
             </div>
             <span className="text-xs font-bold text-slate-500">
-              {activeQueueList.length} {language === 'hi' ? 'वाहन कतार में' : 'Vehicles in Line'}
+              {activeQueueList.length} {localizedVehiclesInLine}
             </span>
           </div>
 
@@ -287,12 +380,12 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b-2 border-slate-200 text-slate-500 font-bold uppercase text-[10px]">
-                  <th className="py-2.5 px-3">{language === 'hi' ? 'कतार' : 'Pos'}</th>
+                  <th className="py-2.5 px-3">{localizedPosHeader}</th>
                   <th className="py-2.5 px-3">{t.digitalPass.tokenNumber}</th>
                   <th className="py-2.5 px-3">{t.farmerRegistration.fullName}</th>
                   <th className="py-2.5 px-3">{t.digitalPass.crop}</th>
                   <th className="py-2.5 px-3">{t.farmerRegistration.vehicle}</th>
-                  <th className="py-2.5 px-3">{language === 'hi' ? 'वर्तमान चरण' : 'Current Stage'}</th>
+                  <th className="py-2.5 px-3">{localizedCurrentStageHeader}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -311,7 +404,7 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
                         #{index + 1}
                       </td>
                       <td className="py-3 px-3 font-mono font-black text-slate-900">
-                        {item.tokenNumber} {isMe && <span className="text-[10px] text-emerald-700 font-bold ml-1">({language === 'hi' ? 'आप' : 'You'})</span>}
+                        {item.tokenNumber} {isMe && <span className="text-[10px] text-emerald-700 font-bold ml-1">({localizedYou})</span>}
                       </td>
                       <td className="py-3 px-3 text-slate-800">{item.farmerName}</td>
                       <td className="py-3 px-3 text-slate-700">
@@ -341,6 +434,15 @@ export function QueueProgressCard({ bookingId }: QueueProgressCardProps) {
           </div>
         </div>
       </div>
+
+      {/* Digital Receipt Modal Popup */}
+      {activeBooking && (
+        <DigitalReceiptModal
+          isOpen={isReceiptOpen}
+          onClose={() => setIsReceiptOpen(false)}
+          booking={activeBooking}
+        />
+      )}
     </div>
   );
 }

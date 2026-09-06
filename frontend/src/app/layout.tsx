@@ -1,17 +1,21 @@
 import type { Metadata, Viewport } from 'next';
-import './globals.css';
-import { LanguageProvider } from '../context/LanguageContext';
-import { PwaRegister } from '../components/PwaRegister';
+import '../globals.css';
+import { LanguageProvider } from '@/context/LanguageContext';
+import { VoiceAssistantProvider } from '@/context/VoiceAssistantContext';
+import { PwaRegister } from '@/components/PwaRegister';
 
 export const metadata: Metadata = {
   title: 'किसान सेतु | Kisan Setu - Smart Procurement Gateway',
-  description: 'Mobile-First Agricultural Procurement & Dynamic Mandi Slot Scheduling Platform (SIH 26032)',
+  description: 'Mobile-First Agricultural Procurement & Dynamic Mandi System',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Kisan Setu'
-  }
+    title: 'Kisan Setu',
+  },
+  icons: {
+    apple: '/icons/icon-192.png', // Replaces the manual apple-touch-icon link
+  },
 };
 
 export const viewport: Viewport = {
@@ -19,7 +23,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  viewportFit: 'cover'
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -29,14 +33,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="hi" className="h-full bg-slate-50">
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-      </head>
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-800 antialiased selection:bg-slate-200">
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-800 antialiased">
         <LanguageProvider>
-          <PwaRegister />
-          {children}
+          <VoiceAssistantProvider>
+            <PwaRegister />
+            {children}
+          </VoiceAssistantProvider>
         </LanguageProvider>
       </body>
     </html>

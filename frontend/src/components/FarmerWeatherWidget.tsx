@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useVoiceAssistant } from '../context/VoiceAssistantContext';
+import { PlayAudioButton } from './VoiceAssistant/PlayAudioButton';
 import {
   useWeatherAdvisory,
   REGISTERED_MANDI_LOCATIONS
@@ -52,6 +54,10 @@ export function FarmerWeatherWidget({ onOpenDashboard }: FarmerWeatherWidgetProp
   const alertMsg = primaryAdvisory
     ? t.weatherInsights[primaryAdvisory.messageKey]?.message || primaryAdvisory.messageKey
     : t.weatherInsights.favorableCondition.message;
+
+  const { activeHighlightKey } = useVoiceAssistant();
+  const isHighlighted = activeHighlightKey === 'weather-advisory-card';
+  const weatherSpokenText = `${alertTitle}. ${alertMsg}. ${t.weatherInsights.temperature}: ${weather.temperature}°C. ${t.weatherInsights.rainForecast}: ${weather.rainProbability}%.`;
 
   return (
     <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-md p-5 sm:p-6 space-y-5">
@@ -125,7 +131,7 @@ export function FarmerWeatherWidget({ onOpenDashboard }: FarmerWeatherWidgetProp
           </div>
         </div>
 
-        {/* 2. Rain Forecast */}
+        {/* 2. Rainfall Chance */}
         <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center space-x-3">
           <div className="p-2 bg-blue-100 text-blue-900 rounded-xl">
             <CloudRain className="w-5 h-5" />
@@ -182,8 +188,10 @@ export function FarmerWeatherWidget({ onOpenDashboard }: FarmerWeatherWidgetProp
 
       {/* Dynamic Context-Aware Agricultural Advisory Alert Banner */}
       <div
-        className={`p-4 sm:p-5 rounded-2xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
-          isCritical
+        className={`p-4 sm:p-5 rounded-2xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs transition-all duration-300 ${
+          isHighlighted
+            ? 'ring-4 ring-emerald-500 shadow-xl scale-[1.01] border-emerald-500 bg-emerald-100/90'
+            : isCritical
             ? 'bg-red-50 border-red-300 text-red-950'
             : isWarning
             ? 'bg-amber-50 border-amber-300 text-amber-950'
@@ -241,17 +249,25 @@ export function FarmerWeatherWidget({ onOpenDashboard }: FarmerWeatherWidgetProp
           </div>
         </div>
 
-        {/* Optional Button to open dedicated full dashboard */}
-        {onOpenDashboard && (
-          <button
-            type="button"
-            onClick={onOpenDashboard}
-            className="self-end sm:self-center px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black flex items-center space-x-1.5 transition-all shadow-xs shrink-0 whitespace-nowrap min-h-[44px]"
-          >
-            <span>{t.weatherInsights.viewFullDashboard}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        )}
+        {/* Action Controls: Play Audio & View Dashboard */}
+        <div className="flex items-center space-x-2 self-end sm:self-center shrink-0">
+          <PlayAudioButton
+            textToSpeak={weatherSpokenText}
+            highlightKey="weather-advisory-card"
+            size="sm"
+          />
+
+          {onOpenDashboard && (
+            <button
+              type="button"
+              onClick={onOpenDashboard}
+              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black flex items-center space-x-1.5 transition-all shadow-xs shrink-0 whitespace-nowrap min-h-[38px]"
+            >
+              <span>{t.weatherInsights.viewFullDashboard}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

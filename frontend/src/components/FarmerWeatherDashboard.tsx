@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { PlayAudioButton } from './VoiceAssistant/PlayAudioButton';
 import {
   useWeatherAdvisory,
   REGISTERED_MANDI_LOCATIONS,
@@ -212,9 +213,16 @@ export function FarmerWeatherDashboard({ onNavigateToBooking }: FarmerWeatherDas
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               {centerInfo.name}
             </span>
-            <span className="px-2.5 py-1 bg-slate-100 rounded-full text-[11px] font-bold text-slate-600">
-              {weather.lastUpdated}
-            </span>
+            <div className="flex items-center space-x-2">
+              <PlayAudioButton
+                textToSpeak={`${centerInfo.name} ${t.weatherInsights.title}. ${t.weatherInsights.temperature}: ${weather.temperature}°C. ${t.weatherInsights.feelsLike}: ${weather.feelsLike}°C. ${t.weatherInsights.rainForecast}: ${weather.rainProbability}%.`}
+                highlightKey="main-weather-card"
+                size="sm"
+              />
+              <span className="px-2.5 py-1 bg-slate-100 rounded-full text-[11px] font-bold text-slate-600">
+                {weather.lastUpdated}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -372,15 +380,22 @@ export function FarmerWeatherDashboard({ onNavigateToBooking }: FarmerWeatherDas
                     </div>
                   </div>
 
-                  <span
-                    className={`px-3 py-1 rounded-xl text-xs font-black border uppercase shrink-0 self-start sm:self-auto ${severityBadgeColor}`}
-                  >
-                    {adv.severity === 'CRITICAL'
-                      ? t.weatherInsights.severities.critical
-                      : adv.severity === 'WARNING'
-                      ? t.weatherInsights.severities.warning
-                      : t.weatherInsights.severities.info}
-                  </span>
+                  <div className="flex items-center space-x-2 shrink-0 self-start sm:self-auto">
+                    <PlayAudioButton
+                      textToSpeak={`${alertTitle}. ${alertMsg}. ${alertAction}`}
+                      highlightKey={`advisory-${adv.id}`}
+                      size="sm"
+                    />
+                    <span
+                      className={`px-3 py-1 rounded-xl text-xs font-black border uppercase ${severityBadgeColor}`}
+                    >
+                      {adv.severity === 'CRITICAL'
+                        ? t.weatherInsights.severities.critical
+                        : adv.severity === 'WARNING'
+                        ? t.weatherInsights.severities.warning
+                        : t.weatherInsights.severities.info}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Advisory Message */}

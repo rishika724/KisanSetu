@@ -239,6 +239,11 @@ export interface TranslationDict {
       title: string;
       subtitle: string;
       cameraScanner: string;
+      cameraStandby: string;
+      startCamera: string;
+      stopCamera: string;
+      scanWebcamBtn: string;
+      simulateScanBtn: string;
       manualInputPlaceholder: string;
       verifyTokenBtn: string;
       quickTestBtn: string;
@@ -247,6 +252,8 @@ export interface TranslationDict {
       invalidToken: string;
       admitVehicle: string;
       assignedLane: string;
+      cameraInstructions: string;
+      simulationRunning: string;
     };
     queueManagement: {
       title: string;
@@ -408,12 +415,72 @@ export interface TranslationDict {
     title: string;
     subtitle: string;
     farmerName: string;
+    farmerId: string;
     crop: string;
     quantity: string;
     vehicle: string;
     timeSlot: string;
     checkInAction: string;
     successMessage: string;
+  };
+  digitalReceipt: {
+    title: string;
+    subtitle: string;
+    receiptId: string;
+    tokenNumber: string;
+    farmerName: string;
+    farmerId: string;
+    village: string;
+    crop: string;
+    dockageGrade: string;
+    moistureLevel: string;
+    foreignMatter: string;
+    grossWeight: string;
+    tareWeight: string;
+    netWeight: string;
+    mspRate: string;
+    moistureDeduction: string;
+    totalPayable: string;
+    paymentStatus: string;
+    dbtStatus: string;
+    downloadPdf: string;
+    printReceipt: string;
+    closeReceipt: string;
+    viewReceipt: string;
+    previewReceipt: string;
+    receiptNotice: string;
+    disbursementTime: string;
+    weighbridgeSlip: string;
+    govtSeal: string;
+    verifiedSignature: string;
+    centerLabel: string;
+    slotLabel: string;
+  };
+  voiceAssistant: {
+    assistantTitle: string;
+    assistantSubtitle: string;
+    listening: string;
+    speaking: string;
+    ready: string;
+    notSupported: string;
+    micPermissionDenied: string;
+    commandsTitle: string;
+    cmdBookSlot: string;
+    cmdCheckQueue: string;
+    cmdReadWeather: string;
+    cmdDigitalPass: string;
+    cmdStartGuided: string;
+    playAudio: string;
+    stopAudio: string;
+    guidedTitle: string;
+    guidedStep1: string;
+    guidedStep2: string;
+    guidedStep3: string;
+    guidedConfirm: string;
+    guidedRestart: string;
+    voiceDictation: string;
+    quickCommands: string;
+    recognizedText: string;
   };
 }
 
@@ -662,15 +729,22 @@ const en: TranslationDict = {
     scanner: {
       title: 'Gate QR Token Scanner',
       subtitle: 'Scan farmer entry tokens to verify authenticity and admit vehicles into the yard.',
-      cameraScanner: 'Camera Scanner Active',
-      manualInputPlaceholder: 'Enter 64-character hash or token number...',
+      cameraScanner: 'Camera Live Scanner',
+      cameraStandby: 'Camera Standby',
+      startCamera: 'Start Camera',
+      stopCamera: 'Stop Camera',
+      scanWebcamBtn: 'Scan via Webcam',
+      simulateScanBtn: 'Simulate Scan (A023)',
+      manualInputPlaceholder: 'Enter token number (e.g. A023) or 64-char hash...',
       verifyTokenBtn: 'Verify and Admit',
-      quickTestBtn: 'Scan Sample Token',
+      quickTestBtn: 'Quick Sample Tokens',
       verifying: 'Verifying Token...',
       verifiedSuccess: 'Token verified successfully. Vehicle admitted to yard.',
       invalidToken: 'Invalid token. Not recognized in Mandi records.',
       admitVehicle: 'Admit to Mandi Gate',
-      assignedLane: 'Assigned Weighbridge Lane'
+      assignedLane: 'Assigned Weighbridge Lane',
+      cameraInstructions: 'Align the farmer QR code inside the scan reticle',
+      simulationRunning: 'Simulating Laser Scan (A023)...'
     },
     queueManagement: {
       title: 'Dynamic Queue and Traffic Controls',
@@ -832,12 +906,72 @@ const en: TranslationDict = {
     title: 'Gate Entry Verification',
     subtitle: 'Verify token QR code and admit farmer vehicle to yard',
     farmerName: 'Farmer Name',
+    farmerId: 'Farmer ID',
     crop: 'Crop',
     quantity: 'Quantity',
     vehicle: 'Vehicle',
     timeSlot: 'Slot',
     checkInAction: 'CHECK-IN',
     successMessage: 'Token verified and gate check-in confirmed!'
+  },
+  digitalReceipt: {
+    title: 'Digital Procurement Settlement Receipt',
+    subtitle: 'Official Minimum Support Price (MSP) Disbursal Document',
+    receiptId: 'Receipt ID',
+    tokenNumber: 'Token ID',
+    farmerName: 'Farmer Name',
+    farmerId: 'Farmer ID',
+    village: 'Village',
+    crop: 'Crop Type',
+    dockageGrade: 'Quality Grade',
+    moistureLevel: 'Moisture Content',
+    foreignMatter: 'Foreign Matter',
+    grossWeight: 'Gross Weight',
+    tareWeight: 'Tare Weight',
+    netWeight: 'Final Net Weight',
+    mspRate: 'MSP Rate',
+    moistureDeduction: 'Moisture Deduction',
+    totalPayable: 'Total Payable Amount',
+    paymentStatus: 'Payment Status',
+    dbtStatus: 'DBT Direct Bank Transfer Confirmed',
+    downloadPdf: 'Download PDF',
+    printReceipt: 'Print Receipt',
+    closeReceipt: 'Close',
+    viewReceipt: 'View Digital Receipt',
+    previewReceipt: 'Preview Receipt',
+    receiptNotice: 'This digital certificate is cryptographically signed under SIH MSP Procurement Guidelines.',
+    disbursementTime: 'Disbursal Timestamp',
+    weighbridgeSlip: 'Electronic Weighbridge Slip',
+    govtSeal: 'Govt. of India • Ministry of Agriculture',
+    verifiedSignature: 'Digitally Verified & Approved',
+    centerLabel: 'Procurement Center',
+    slotLabel: 'Arrival Slot'
+  },
+  voiceAssistant: {
+    assistantTitle: 'Kisan Setu Voice Assistant',
+    assistantSubtitle: 'Hands-free voice navigation & assistance',
+    listening: 'Listening... speak now',
+    speaking: 'Speaking response...',
+    ready: 'Tap microphone to speak',
+    notSupported: 'Speech recognition is not supported on this browser',
+    micPermissionDenied: 'Microphone permission denied. Please allow microphone access.',
+    commandsTitle: 'Try saying one of these commands:',
+    cmdBookSlot: 'Book Slot',
+    cmdCheckQueue: 'Check Queue Status',
+    cmdReadWeather: 'Read Weather Alert',
+    cmdDigitalPass: 'Show Digital Pass',
+    cmdStartGuided: 'Start Voice Guided Booking',
+    playAudio: 'Play Audio',
+    stopAudio: 'Stop Audio',
+    guidedTitle: 'Voice Guided Booking Assistant',
+    guidedStep1: 'Which crop do you want to sell today? (e.g. Wheat, Paddy, Mustard, Cotton, Pulses)',
+    guidedStep2: 'How much quantity in quintals? (e.g. 35 quintals)',
+    guidedStep3: 'What vehicle will you bring? (e.g. Tractor, Truck, Bullock Cart)',
+    guidedConfirm: 'All details confirmed. Slot booked successfully! Your pass is ready.',
+    guidedRestart: 'Start Over',
+    voiceDictation: 'Click to dictate via voice',
+    quickCommands: 'Quick Voice Commands',
+    recognizedText: 'You said:'
   }
 };
 
@@ -1087,15 +1221,22 @@ const hi: TranslationDict = {
     scanner: {
       title: 'गेट क्यूआर टोकन स्कैनर',
       subtitle: 'किसानों के प्रवेश टोकन की प्रामाणिकता जांचें और वाहनों को प्रवेश दें।',
-      cameraScanner: 'कैमरा स्कैनर सक्रिय',
-      manualInputPlaceholder: 'टोकन संख्या या कोड दर्ज करें...',
+      cameraScanner: 'लाइव कैमरा स्कैनर',
+      cameraStandby: 'कैमरा स्टैंडबाय',
+      startCamera: 'कैमरा शुरू करें',
+      stopCamera: 'कैमरा बंद करें',
+      scanWebcamBtn: 'वेबकैम से स्कैन करें',
+      simulateScanBtn: 'नियम परीक्षण स्कैन (A023)',
+      manualInputPlaceholder: 'टोकन संख्या (उदा. A023) या कोड दर्ज करें...',
       verifyTokenBtn: 'सत्यापित करें एवं प्रवेश दें',
       quickTestBtn: 'सैंपल टोकन स्कैन करें',
       verifying: 'सत्यापन जारी है...',
       verifiedSuccess: 'टोकन वैध पाया गया। वाहन को यार्ड में प्रवेश दिया गया।',
       invalidToken: 'अमान्य टोकन। मंडी अभिलेखों में उपलब्ध नहीं है।',
       admitVehicle: 'मंडी गेट में प्रवेश दें',
-      assignedLane: 'आवंटित वे-ब्रिज लेन'
+      assignedLane: 'आवंटित वे-ब्रिज लेन',
+      cameraInstructions: 'किसान के डिजिटल क्यूआर कोड को स्कैन फ्रेम के अंदर रखें',
+      simulationRunning: 'लेजर स्कैन का अनुकरण किया जा रहा है (A023)...'
     },
     queueManagement: {
       title: 'डायनामिक कतार एवं यातायात नियंत्रण',
@@ -1257,16 +1398,567 @@ const hi: TranslationDict = {
     title: 'गेट प्रवेश सत्यापन',
     subtitle: 'टोकन क्यूआर कोड जांचें और वाहन को मंडी यार्ड में प्रवेश दें',
     farmerName: 'किसान का नाम',
+    farmerId: 'किसान आईडी',
     crop: 'फसल',
     quantity: 'मात्रा',
     vehicle: 'वाहन',
     timeSlot: 'समय स्लॉट',
     checkInAction: 'प्रवेश सत्यापित करें (CHECK-IN)',
     successMessage: 'टोकन सत्यापित हुआ एवं गेट प्रवेश स्वीकृत किया गया!'
+  },
+  digitalReceipt: {
+    title: 'डिजिटल उपार्जन निपटान रसीद',
+    subtitle: 'न्यूनतम समर्थन मूल्य (MSP) प्रत्यक्ष बैंक भुगतान प्रमाण पत्र',
+    receiptId: 'रसीद संख्या',
+    tokenNumber: 'टोकन संख्या',
+    farmerName: 'किसान का नाम',
+    farmerId: 'किसान पहचान',
+    village: 'गांव',
+    crop: 'खरीदी गई फसल',
+    dockageGrade: 'गुणवत्ता ग्रेड',
+    moistureLevel: 'नमी प्रतिशत',
+    foreignMatter: 'विजातीय तत्व',
+    grossWeight: 'सकल वजन',
+    tareWeight: 'खाली वाहन वजन',
+    netWeight: 'अंतिम शुद्ध वजन',
+    mspRate: 'एमएसपी समर्थन दर',
+    moistureDeduction: 'नमी कटौती राशि',
+    totalPayable: 'कुल देय राशि',
+    paymentStatus: 'भुगतान स्थिति',
+    dbtStatus: 'प्रत्यक्ष लाभ अंतरण (DBT) स्वीकृत',
+    downloadPdf: 'रसीद डाउनलोड (PDF)',
+    printReceipt: 'रसीद प्रिंट करें',
+    closeReceipt: 'बंद करें',
+    viewReceipt: 'डिजिटल रसीद देखें',
+    previewReceipt: 'रसीद पूर्वावलोकन',
+    receiptNotice: 'यह डिजिटल प्रमाण पत्र भारत सरकार के एमएसपी खरीद नियमों के तहत डिजिटल रूप से सत्यापित है।',
+    disbursementTime: 'भुगतान समय',
+    weighbridgeSlip: 'इलेक्ट्रॉनिक वे-ब्रिज तौल पर्ची',
+    govtSeal: 'भारत सरकार • कृषि एवं किसान कल्याण मंत्रालय',
+    verifiedSignature: 'डिजिटल रूप से प्रमाणित एवं स्वीकृत',
+    centerLabel: 'खरीद केंद्र',
+    slotLabel: 'आगमन समय'
+  },
+  voiceAssistant: {
+    assistantTitle: 'किसान सेतु वॉइस असिस्टेंट',
+    assistantSubtitle: 'हाथ-मुक्त वॉइस नेविगेशन एवं सहायता',
+    listening: 'सुन रहा है... अब बोलें',
+    speaking: 'उत्तर दिया जा रहा है...',
+    ready: 'बोलने के लिए माइक दबाएं',
+    notSupported: 'इस ब्राउज़र पर वॉइस रिकग्निशन समर्थित नहीं है',
+    micPermissionDenied: 'माइक्रोफ़ोन अनुमति अस्वीकृत। कृपया माइक की अनुमति दें।',
+    commandsTitle: 'इनमें से कोई भी कमांड बोलें:',
+    cmdBookSlot: 'स्लॉट बुक करें',
+    cmdCheckQueue: 'कतार स्थिति जांचें',
+    cmdReadWeather: 'मौसम अलर्ट पढ़ें',
+    cmdDigitalPass: 'डिजिटल पास दिखाएं',
+    cmdStartGuided: 'वॉइस निर्देशित बुकिंग शुरू करें',
+    playAudio: 'ऑडियो सुनें',
+    stopAudio: 'ऑडियो रोकें',
+    guidedTitle: 'वॉइस निर्देशित बुकिंग सहायक',
+    guidedStep1: 'आज आप कौन सी फसल बेचना चाहते हैं? (उदा. गेहूं, धान, सरसों, कपास, दालें)',
+    guidedStep2: 'कितनी मात्रा क्विंटल में? (उदा. 35 क्विंटल)',
+    guidedStep3: 'आप कौन सा वाहन लाएंगे? (उदा. ट्रैक्टर, ट्रक, बैलगाड़ी)',
+    guidedConfirm: 'सभी विवरण दर्ज हो गए हैं। स्लॉट सफलतापूर्वक बुक हो गया है! आपका पास तैयार है।',
+    guidedRestart: 'पुनः प्रारंभ करें',
+    voiceDictation: 'बोलकर दर्ज करने के लिए क्लिक करें',
+    quickCommands: 'त्वरित वॉइस कमांड',
+    recognizedText: 'आपने कहा:'
   }
 };
 
-// 3. PUNJABI (ਪੰਜਾਬੀ)
+// 3. TELUGU (తెలుగు) - 100% PURE TELUGU DICTIONARY
+const te: TranslationDict = {
+  brandName: 'కిసాన్ సేతు',
+  brandTagline: 'డిజిటల్ వ్యవసాయ సేకరణ వేదిక',
+  langSwitchLabel: 'భాషను ఎంచుకోండి',
+  activeLanguage: 'తెలుగు',
+  roleSwitcher: {
+    farmer: 'రైతు యాప్',
+    admin: 'అడ్మిన్ డాష్‌బోర్డ్',
+    farmerDesc: 'నమోదు, స్లాట్ బుకింగ్ మరియు లైవ్ క్యూ పాస్',
+    adminDesc: 'మార్కెట్ యార్డ్ గేట్ స్కానర్ మరియు వేబ్రిడ్జి నిర్వహణ'
+  },
+  farmerRegistration: {
+    title: 'రైతు నమోదు మరియు ధృవీకరణ',
+    subtitle: 'సేకరణ కేంద్రంలో స్లాట్ బుక్ చేసుకోవడానికి మీ ప్రాథమిక వివరాలను నమోదు చేయండి.',
+    fullName: 'రైతు పూర్తి పేరు',
+    fullNamePlaceholder: 'మీ పూర్తి పేరును నమోదు చేయండి',
+    farmerId: 'రైతు గుర్తింపు సంఖ్య',
+    regenerateId: 'కొత్త ఐడీని రూపొందించండి',
+    mobile: 'మొబైల్ నంబర్',
+    mobilePlaceholder: '10 అంకెల మొబైల్ నంబర్ నమోదు చేయండి',
+    requestOtp: 'ఓటీపీ పంపండి',
+    verifyOtp: 'ఓటీపీ ధృవీకరించండి',
+    otpLabel: 'ధృవీకరణ కోడ్',
+    otpHint: 'నమూనా ధృవీకరణ కోడ్: 123456',
+    verified: 'ధృవీకరించబడింది',
+    village: 'గ్రామం',
+    villageSelect: 'గ్రామాన్ని ఎంచుకోండి',
+    customVillage: 'ఇతర గ్రామం',
+    crop: 'ప్రధాన పంట',
+    quantity: 'సుమారు పరిమాణం',
+    quantityUnit: 'క్వింటాళ్ళు',
+    vehicle: 'వాహనం రకం',
+    loginSuccess: 'రైతు వివరాలు విజయవంతంగా ధృవీకరించబడ్డాయి.',
+    continueBooking: 'స్లాట్ బుకింగ్‌కు కొనసాగండి',
+    validationError: 'దయచేసి అన్ని తప్పనిసరి వివరాలను సరిగ్గా పూరించండి.',
+    demoProfilesTitle: 'శీఘ్ర నమూనా ప్రొఫైల్స్'
+  },
+  crops: {
+    PADDY: 'వరి',
+    WHEAT: 'గోధుమలు',
+    MAIZE: 'మొక్కజొన్న',
+    RED_GRAM: 'కందులు',
+    BENGAL_GRAM: 'శనగలు',
+    GREEN_GRAM: 'పెసలు',
+    GROUNDNUT: 'వేరుశనగ',
+    SOYBEAN: 'సోయాబీన్',
+    SOYABEAN: 'సోయాబీన్',
+    MUSTARD: 'ఆవాలు',
+    COTTON: 'పత్తి',
+    PULSES: 'పప్పుధాన్యాలు'
+  },
+  cropDescriptions: {
+    PADDY: 'ఖరీఫ్ ప్రధాన పంట',
+    WHEAT: 'రబీ ముఖ్య ఆహార ధాన్యం',
+    MAIZE: 'ముతక ఆహార ధాన్యం',
+    RED_GRAM: 'ప్రోటీన్ సమృద్ధిగా ఉండే కంది పప్పు',
+    BENGAL_GRAM: 'శనగ పప్పు పంట',
+    GREEN_GRAM: 'పెసర పప్పు దిగుబడి',
+    GROUNDNUT: 'నూనె గింజల పంట',
+    SOYBEAN: 'అధిక ప్రోటీన్ వాణిజ్య నూనె గింజలు',
+    SOYABEAN: 'అధిక ప్రోటీన్ వాణిజ్య నూనె గింజలు',
+    MUSTARD: 'శీతాకాలపు నూనె గింజ పంట',
+    COTTON: 'వాణిజ్య పత్తి పంట',
+    PULSES: 'శనగలు, కందులు మరియు పెసలు'
+  },
+  vehicles: {
+    TRACTOR: 'ట్రాక్టర్/ట్రాలీ',
+    TRUCK: 'ట్రక్కు',
+    MINI_TRUCK: 'మినీ ట్రక్కు',
+    BULLOCK_CART: 'ఎడ్ల బండి',
+    LARGE_TRUCK: 'భారీ వాణిజ్య ట్రక్కు'
+  },
+  vehicleUnloadTimes: {
+    TRACTOR: '15 నిమిషాల అన్‌లోడింగ్',
+    TRUCK: '10 నిమిషాల అన్‌లోడింగ్',
+    MINI_TRUCK: '12 నిమిషాల అన్‌లోడింగ్',
+    BULLOCK_CART: '25 నిమిషాల అన్‌లోడింగ్',
+    LARGE_TRUCK: '10 నిమిషాల అన్‌లోడింగ్'
+  },
+  centerStatus: {
+    open: 'తెరిచి ఉంది',
+    busy: 'రద్దీగా ఉంది',
+    closed: 'మూసివేయబడింది'
+  },
+  centerDetails: {
+    currentQueue: 'ప్రస్తుత క్యూ',
+    estimatedWaiting: 'అంచనా వేచి ఉండే సమయం',
+    availableSlots: 'అందుబాటులో ఉన్న స్లాట్లు',
+    location: 'ప్రదేశం మరియు దూరం',
+    selectCenter: 'సేకరణ కేంద్రాన్ని ఎంచుకోండి',
+    selected: 'ఎంచుకున్న కేంద్రం',
+    vehiclesWaiting: 'వాహనాలు వేచి ఉన్నాయి',
+    minsWait: 'నిమిషాలు',
+    slotsOpenToday: 'నేడు అందుబాటులో ఉన్న స్లాట్లు'
+  },
+  farmerIntake: {
+    centerTitle: '౧. సేకరణ కేంద్రాన్ని ఎంచుకోండి',
+    centerSubtitle: 'క్యూ మరియు వేచి ఉండే సమయం ఆధారంగా కేంద్రాన్ని ఎంచుకోండి.',
+    cropTitle: '౨. పంటను ఎంచుకోండి',
+    cropSubtitle: 'మీ ప్రధాన పంటను ఎంచుకోండి. డెమో కోసం వరి ప్రధానంగా ఎంపిక చేయబడింది.',
+    detailsTitle: '౩. పరిమాణం మరియు వాహనం వివరాలు',
+    detailsSubtitle: 'అంచనా పరిమాణం మరియు మీ రవాణా వాహనాన్ని ఎంచుకోండి.',
+    demoStar: 'డెమో ముఖ్య పంట',
+    selectedCropLabel: 'ఎంచుకున్న పంట',
+    quantityLabel: 'పరిమాణం (క్వింటాళ్ళలో)',
+    quantityUnit: 'క్వింటాళ్ళు',
+    vehicleLabel: 'వాహనం ఎంపిక',
+    confirmBookingBtn: 'కేంద్రాన్ని నిర్ధారించి డిజిటల్ పాస్ పొందండి',
+    bookingNotice: 'స్కాన్ చేయగల క్యూఆర్ కోడ్ డిజిటల్ పాస్ వెంటనే జారీ చేయబడుతుంది.'
+  },
+  booking: {
+    step1Title: '౧. పంట వివరాలు మరియు బరువు',
+    step1Subtitle: 'మీ పంట మరియు క్వింటాళ్ళలో అంచనా పరిమాణాన్ని నిర్ధారించండి.',
+    step2Title: '౨. సేకరణ కేంద్రం మరియు స్లాట్',
+    step2Subtitle: 'సమీపంలోని మండి మరియు రాక సమయాన్ని ఎంచుకోండి.',
+    step3Title: '౩. వాహనం మరియు రవాణా',
+    step3Subtitle: 'వేబ్రిడ్జి ఖాళీ చేసే సమయం ఆధారంగా రవాణా మార్గాన్ని ఎంచుకోండి.',
+    stepIndicator: 'దశ',
+    nextStep: 'కొనసాగించండి',
+    prevStep: 'వెనుకకు',
+    quickAdd: 'త్వరిత జోడింపు:',
+    selectCenter: 'సేకరణ కేంద్రాన్ని ఎంచుకోండి',
+    selectDate: 'షెడ్యూల్ చేసిన తేదీ',
+    selectSlot: 'అందుబాటులో ఉన్న సమయం',
+    slotsAvailable: 'స్లాట్లు అందుబాటులో ఉన్నాయి',
+    capacityBadges: {
+      available: 'అందుబాటులో ఉంది',
+      moderate: 'మధ్యస్థం',
+      full: 'పూర్తిగా నిండింది'
+    },
+    submitBooking: 'బుకింగ్‌ను నిర్ధారించి పాస్ పొందండి',
+    submitting: 'పాస్ రూపొందించబడుతోంది...',
+    bookingSuccess: 'బుకింగ్ నిర్ధారించబడింది. మీ డిజిటల్ టోకెన్ పాస్ రూపొందించబడింది.',
+    bookingError: 'బుకింగ్ విఫలమైంది. దయచేసి స్లాట్ లభ్యతను తనిఖీ చేయండి.',
+    summaryTitle: 'బుకింగ్ సారాంశం',
+    spotsLeft: 'మిగిలిన స్లాట్లు',
+    booked: 'బుక్ చేయబడింది'
+  },
+  digitalPass: {
+    title: 'డిజిటల్ మండి ప్రవేశ పాస్',
+    subtitle: 'ఈ పాస్ మీ పరికరంలో భద్రపరచబడింది మరియు ఇంటర్నెట్ లేకపోయినా మండి గేట్ వద్ద చెల్లుతుంది.',
+    tokenNumber: 'టోకెన్ సంఖ్య',
+    tokenHash: 'క్రిప్టోగ్రాఫిక్ హాష్',
+    farmerName: 'రైతు పేరు',
+    farmerId: 'రైతు ఐడీ',
+    village: 'గ్రామం',
+    center: 'సేకరణ కేంద్రం',
+    date: 'రాక తేదీ',
+    timeSlot: 'సమయ స్లాట్',
+    crop: 'దిగుబడి',
+    quantity: 'పరిమాణం',
+    vehicle: 'వాహనం',
+    status: 'ప్రస్తుత స్థితి',
+    statusValues: {
+      BOOKED: 'బుక్ చేయబడింది',
+      STAGING: 'బఫర్ యార్డ్',
+      MANDI_GATE: 'గేట్ వద్ద అనుమతించబడింది',
+      INSPECTION: 'తనిఖీ & తూకం కొనసాగుతోంది',
+      COMPLETED: 'పూర్తయింది'
+    },
+    downloadPass: 'పాస్ డౌన్‌లోడ్',
+    printPass: 'పాస్ ప్రింట్',
+    sharePass: 'పాస్ షేర్',
+    offlineBadge: 'ఆఫ్‌లైన్ సిద్ధం',
+    offlineNotice: 'గేట్ సిబ్బంది ఇంటర్నెట్ లేకుండానే ఈ క్యూఆర్ కోడ్‌ను స్కాన్ చేసి ధృవీకరించగలరు.',
+    noPassFound: 'యాక్టివ్ పాస్ కనుగొనబడలేదు',
+    noPassDesc: 'ప్రస్తుతం మీ వద్ద ఎలాంటి యాక్టివ్ బుకింగ్ పాస్ లేదు.',
+    bookSlotNow: 'ఇప్పుడే స్లాట్ బుక్ చేసుకోండి'
+  },
+  queueTracker: {
+    title: 'లైవ్ క్యూ పురోగతి ట్రాకర్',
+    subtitle: 'బయలుదేరడం నుండి చెల్లింపు వరకు వాహనం యొక్క నిజ-సమయ స్థితి.',
+    yourPosition: 'మీ క్యూ స్థానం',
+    vehiclesAhead: 'మీ కంటే ముందున్న వాహనాలు',
+    estimatedWaitTime: 'అంచనా వేచి ఉండే సమయం',
+    minutes: 'నిమిషాలు',
+    assignedLane: 'కేటాయించిన వేబ్రిడ్జి లేన్',
+    currentStage: 'ప్రస్తుత దశ',
+    stages: {
+      booked: {
+        title: '౧. బుక్ చేయబడింది',
+        desc: 'స్లాట్ నిర్ధారించబడింది. రవాణా కోసం పంటను సిద్ధం చేసుకోండి.'
+      },
+      staging: {
+        title: '౨. బఫర్ యార్డ్',
+        desc: 'మండి సమీపంలోని హోల్డింగ్ యార్డ్. గేట్ పిలుపు కోసం వేచి ఉండండి.'
+      },
+      gate: {
+        title: '౩. గేట్ చెక్-ఇన్',
+        desc: 'క్యూఆర్ టోకెన్ ధృవీకరించబడింది. సేకరణ యార్డులోకి అనుమతించబడింది.'
+      },
+      inspection: {
+        title: '౪. నాణ్యత & తూకం',
+        desc: 'నమూనా గ్రేడింగ్, ఖాళీ మరియు లోడ్ వాహన తూకం కొలత.'
+      },
+      completed: {
+        title: '౫. పూర్తయింది',
+        desc: 'తుది తూకం రసీదు జారీ చేయబడింది. నేరుగా బ్యాంక్ బదిలీ ద్వారా చెల్లింపు జరిగింది.'
+      }
+    },
+    distanceSimulator: {
+      title: 'GPS దూర సిమ్యులేటర్',
+      desc: 'వాహన ప్రయాణ దూరాన్ని అనుకరించి డైనమిక్ క్యూ దశ మార్పులను చూడండి.',
+      home: 'ఇంటి స్థానం (12 కి.మీ)',
+      buffer: 'బఫర్ యార్డ్ (2 కి.మీ)',
+      gate: 'మండి గేట్ (200 మీ)'
+    }
+  },
+  notifications: {
+    title: 'నోటిఫికేషన్‌లు మరియు హెచ్చరికలు',
+    noNotifications: 'ప్రస్తుతం ఎలాంటి హెచ్చరికలు లేవు.',
+    markAllRead: 'అన్నీ చదివినట్లు గుర్తించండి',
+    dismiss: 'తీసివేయండి',
+    notifBookingTitle: 'స్లాట్ విజయవంతంగా బుక్ చేయబడింది',
+    notifBookingMsg: 'మీ రాక సమయం నిర్ధారించబడింది. డిజిటల్ పాస్ సిద్ధంగా ఉంది.',
+    notifGateCheckinTitle: 'గేట్ చెక్-ఇన్ నిర్ధారించబడింది',
+    notifGateCheckinMsg: 'మీ క్యూఆర్ టోకెన్ గేట్ వద్ద స్కాన్ చేయబడింది. దయచేసి కేటాయించిన లేన్‌కు వెళ్ళండి.',
+    notifInspectionTitle: 'నాణ్యత తనిఖీ మరియు తూకం పూర్తయింది',
+    notifInspectionMsg: 'పంట గ్రేడింగ్ మరియు తూకం పూర్తయింది. తుది చెల్లింపు రసీదు రూపొందించబడింది.',
+    notifBreakdownTitle: 'ట్రాఫిక్ నోటీసు: వేబ్రిడ్జి నిర్వహణ',
+    notifBreakdownMsg: 'పరికరాల నిర్వహణ జరుగుతోంది. వాహనాలు ప్రత్యామ్నాయ గేటుకు మళ్లించబడుతున్నాయి.',
+    notifEmergencyTitle: 'ప్రాధాన్యతా లేన్ క్రియాశీలం',
+    notifEmergencyMsg: 'వేగవంతమైన కదలిక కోసం అత్యవసర ప్రాధాన్యతా లేన్ ప్రారంభించబడింది.',
+    notifTrafficTitle: 'ట్రాఫిక్ ప్రవాహ సమాచారం',
+    notifTrafficMsg: 'మండి యార్డ్ ట్రాఫిక్ సాధారణ వేగంతో కదులుతోంది.'
+  },
+  adminDashboard: {
+    title: 'మండి పరిపాలనా డాష్‌బోర్డ్',
+    subtitle: 'ప్రత్యక్ష పర్యవేక్షణ, గేట్ భద్రతా స్కానర్, డైనమిక్ క్యూ నియంత్రణ మరియు వేబ్రిడ్జి తనిఖీలు.',
+    liveOverview: 'అవలోకనం',
+    gateScanner: 'గేట్ స్కానర్',
+    queueControl: 'క్యూ నియంత్రణ',
+    weighingInspection: 'నాణ్యత & తూకం',
+    metrics: {
+      dailyTokens: 'రోజువారీ టోకెన్లు',
+      activeQueue: 'క్యూలో ఉన్న వాహనాలు',
+      mandiCapacity: 'మండి సామర్థ్య వినియోగం',
+      activeWeighbridges: 'క్రియాశీల వేబ్రిడ్జిలు',
+      completedProcurement: 'పూర్తయిన సేకరణలు',
+      totalDisbursed: 'మొత్తం సేకరణ విలువ'
+    },
+    scanner: {
+      title: 'గేట్ క్యూఆర్ టోకెన్ స్కానర్',
+      subtitle: 'రైతు ప్రవేశ టోకెన్ల ప్రామాణికతను తనిఖీ చేసి వాహనాలను యార్డులోకి అనుమతించండి.',
+      cameraScanner: 'లైవ్ కెమెరా స్కానర్',
+      cameraStandby: 'కెమెరా స్టాండ్‌బై',
+      startCamera: 'కెమెరా ప్రారంభించండి',
+      stopCamera: 'కెమెరా ఆపండి',
+      scanWebcamBtn: 'వెబ్‌క్యామ్ ద్వారా స్కాన్ చేయండి',
+      simulateScanBtn: 'పరీక్షా స్కాన్ అనుకరణ (A023)',
+      manualInputPlaceholder: 'టోకెన్ సంఖ్య (ఉదా. A023) లేదా కోడ్ నమోదు చేయండి...',
+      verifyTokenBtn: 'ధృవీకరించి అనుమతించండి',
+      quickTestBtn: 'నమూనా టోకెన్లు',
+      verifying: 'ధృవీకరిస్తోంది...',
+      verifiedSuccess: 'టోకెన్ విజయవంతంగా ధృవీకరించబడింది. వాహనం యార్డులోకి అనుమతించబడింది.',
+      invalidToken: 'చెల్లని టోకెన్. మండి రికార్డులలో గుర్తించబడలేదు.',
+      admitVehicle: 'మండి గేట్ వద్ద అనుమతించండి',
+      assignedLane: 'కేటాయించిన వేబ్రిడ్జి లేన్',
+      cameraInstructions: 'రైతు డిజిటల్ క్యూఆర్ కోడ్‌ను స్కాన్ ఫ్రేమ్‌లో ఉంచండి',
+      simulationRunning: 'లేజర్ స్కాన్ అనుకరణ జరుగుతోంది (A023)...'
+    },
+    queueManagement: {
+      title: 'డైనమిక్ క్యూ మరియు ట్రాఫిక్ నియంత్రణలు',
+      subtitle: 'లేన్ ప్రాధాన్యతలను నిర్వహించండి మరియు రద్దీని క్రమబద్ధీకరించండి.',
+      emergencyLaneToggle: 'అత్యవసర ప్రాధాన్యతా లేన్',
+      breakdownModeToggle: 'పరికరాల మరమ్మతు మోడ్',
+      trafficRerouteToggle: 'ట్రాఫిక్ మళ్లింపు',
+      rerouteGateLabel: 'మళ్లింపు గేట్',
+      active: 'క్రియాశీలం',
+      inactive: 'నిష్క్రియం',
+      callNext: 'వాహనాన్ని పిలవండి',
+      prioritize: 'ప్రాధాన్యత ఇవ్వండి',
+      tableHeaders: {
+        token: 'టోకెన్',
+        farmer: 'రైతు',
+        vehicle: 'వాహనం',
+        cropQuantity: 'పంట & పరిమాణం',
+        timeSlot: 'స్లాట్',
+        status: 'స్థితి',
+        actions: 'చర్యలు'
+      }
+    },
+    weighingForm: {
+      title: 'నాణ్యతా పరీక్ష మరియు వేబ్రిడ్జి కార్యకలాపాలు',
+      subtitle: 'తేమ శాతం, గ్రేడ్, స్థూల బరువు మరియు ఖాళీ వాహన బరువును నమోదు చేయండి.',
+      selectToken: 'వచ్చిన రైతు టోకెన్‌ను ఎంచుకోండి',
+      qualityScore: 'నాణ్యత గ్రేడ్',
+      moistureLevel: 'తేమ శాతం',
+      moistureUnit: '%',
+      dockageGrade: 'డ్రెస్సింగ్ గ్రేడ్',
+      foreignMatter: 'ఇతర పదార్థాలు (%)',
+      grossWeight: 'స్థూల బరువు (వాహనం + పంట)',
+      tareWeight: 'ఖాళీ వాహన బరువు',
+      netWeight: 'నికర పంట బరువు',
+      mspRate: 'కనీస మద్దతు ధర (క్వింటాలుకు)',
+      moisturePenalty: 'తేమ మినహాయింపు',
+      netPayout: 'తుది చెల్లింపు మొత్తం',
+      weightUnit: 'కిలోలు',
+      approveAndIssue: 'ఆమోదించి రశీదు జారీ చేయండి',
+      approvedSuccess: 'రశీదు రూపొందించబడింది మరియు ప్రత్యక్ష బ్యాంక్ బదిలీ ప్రారంభమైంది.',
+      selectPrompt: 'తూకం ప్రారంభించడానికి రైతు టోకెన్‌ను ఎంచుకోండి'
+    }
+  },
+  common: {
+    quintal: 'క్వింటాల్',
+    kg: 'కిలోలు',
+    rupees: '₹',
+    verified: 'ధృవీకరించబడింది',
+    pending: 'వేచి ఉంది',
+    close: 'మూసివేయండి',
+    active: 'క్రియాశీలం',
+    inactive: 'నిష్క్రియం',
+    helpline: 'టోల్-ఫ్రీ కిసాన్ హెల్ప్‌లైన్: 1800-180-1551',
+    allRightsReserved: 'స్మార్ట్ ఇండియా హ్యాకథాన్ నమూనా'
+  },
+  weatherInsights: {
+    title: 'స్మార్ట్ వాతావరణ సలహా & హెచ్చరికల మాడ్యూల్',
+    subtitle: 'ప్రాంతీయ సూక్ష్మ శీతోష్ణస్థితి సమాచారం మరియు వ్యవసాయ రక్షణ హెచ్చరికలు',
+    tabTitle: 'వాతావరణం & సలహాలు',
+    temperature: 'ఉష్ణోగ్రత',
+    feelsLike: 'అనిపించే ఉష్ణోగ్రత',
+    rainForecast: 'వర్షపాత సంభావ్యత',
+    windSpeed: 'గాలి వేగం',
+    humidity: 'తేమ శాతం',
+    uvIndex: 'యూవీ సూచిక',
+    pressure: 'వాయుపీడనం',
+    rainAlertTitle: 'వర్షపు హెచ్చరిక',
+    rainAlertMsg: 'వర్షం పడే అవకాశం ఉంది: కోసిన పంటను వెంటనే కప్పండి.',
+    heatAlertTitle: 'తీవ్ర ఎండ హెచ్చరిక',
+    heatAlertMsg: 'అధిక ఉష్ణోగ్రత: పంటలు మరియు పశువులకు నీడను కల్పించండి.',
+    advisoryHeader: 'క్రియాశీల వ్యవసాయ సలహా హెచ్చరికలు',
+    locationLabel: 'నమోదిత సేకరణ కేంద్రం',
+    conditionNames: {
+      sunny: 'స్పష్టమైన ఎండ',
+      thunderstorm: 'ఉరుములతో కూడిన తుఫాను',
+      rainy: 'భారీ వర్షం',
+      cloudy: 'పాక్షిక మేఘావృతం',
+      highHeat: 'తీవ్రమైన ఎండ',
+      highWind: 'ఈదురు గాలులు'
+    },
+    severities: {
+      critical: 'కీలక హెచ్చరిక',
+      warning: 'వాతావరణ హెచ్చరిక',
+      info: 'కార్యకలాపాల సమాచారం'
+    },
+    rainAlert: {
+      title: 'వర్షపు హెచ్చరిక: పంట రక్షణ అవసరం',
+      message: 'వర్షపు హెచ్చరిక: బయట ఉన్న కోత కోసిన పంటను (వరి/గోధుమ) వెంటనే కప్పండి. పురుగుమందుల పిచికారీని వాయిదా వేయండి.',
+      action: 'బహిరంగ ప్రదేశంలో ఉన్న ధాన్యంపై వాటర్‌ప్రూఫ్ టార్పాలిన్ కవర్లను కప్పి, వర్షం తగ్గే వరకు పిచికారీని నిలిపివేయండి.'
+    },
+    heatAlert: {
+      title: 'తీవ్ర ఎండ హెచ్చరిక: సూర్యరశ్మి & తేమ రక్షణ',
+      message: 'ఎండ హెచ్చరిక: కోసిన పంటను నేరుగా ఎండ తగలకుండా కాపాడండి. పశువులకు తగినంత నీరు అందించండి.',
+      action: 'ధాన్యం ఎండి బరువు తగ్గకుండా ఉండేందుకు నీడ ఉన్న ప్రదేశంలో భద్రపరచండి. పశువులకు తాజా నీటిని సమకూర్చండి.'
+    },
+    windAlert: {
+      title: 'తీవ్ర గాలి హెచ్చరిక: వ్యవసాయ మౌలిక సదుపాయాల రక్షణ',
+      message: 'గాలి హెచ్చరిక: తాత్కాలిక నిర్మాణాలను భద్రపరచండి. సున్నితమైన నీటిపారుదల పద్ధతులను నివారించండి.',
+      action: 'నర్సరీ షెడ్లు మరియు టార్పాలిన్లను గట్టిగా కట్టండి; తీవ్రమైన గాలుల్లో స్ప్రింక్లర్ సాగును నివారించండి.'
+    },
+    procurementAlert: {
+      title: 'సేకరణ కేంద్ర రవాణా సలహా',
+      message: 'హెచ్చరిక: రేపు సేకరణ కేంద్రం వద్ద భారీ వర్షం కురిసే అవకాశం ఉంది. ప్రయాణించే ముందు కేంద్రం స్థితిని తనిఖీ చేయండి.',
+      action: 'సుదీర్ఘ గేట్ క్యూలను నివారించడానికి మీ గ్రామం నుండి బయలుదేరే ముందు కిసాన్ సేతులో లైవ్ కేంద్రాన్ని పరిశీలించండి.'
+    },
+    tarpaulinAlert: {
+      title: 'తేమ రక్షణ రవాణా హెచ్చరిక',
+      message: 'టార్పాలిన్ రవాణా హెచ్చరిక: వేబ్రిడ్జి వద్ద తేమ కోతలను నివారించడానికి ధాన్యం బస్తాలపై వాటర్‌ప్రూఫ్ టార్పాలిన్ షీట్లను కప్పండి.',
+      action: 'గేట్ బయలుదేరే ముందు వాహనం కవర్లను తనిఖీ చేయండి; 12% కంటే ఎక్కువ తేమ ఉంటే మద్దతు ధరలో కోత విధించబడుతుంది.'
+    },
+    favorableCondition: {
+      title: 'అనుకూలమైన కోత & రవాణా పరిస్థితులు',
+      message: 'వాతావరణం స్థిరంగా మరియు కోత, పొలం రవాణా మరియు మండి వేబ్రిడ్జి ప్రాసెసింగ్‌కు అనుకూలంగా ఉంది.',
+      action: 'షెడ్యూల్ ప్రకారం పంట రవాణాను కొనసాగించండి. వాతావరణ అంతరాయాలు ఏవీ లేవు.'
+    },
+    simulation: {
+      title: 'వాతావరణ దృశ్య అనుకరణ',
+      subtitle: 'నిజ-సమయ నియమ ఇంజిన్ ప్రతిస్పందనను అంచనా వేయడానికి తీవ్ర వాతావరణాన్ని అనుకరించండి',
+      scenarios: {
+        rain: 'వర్షపు హెచ్చరిక (>60%)',
+        heat: 'తీవ్రమైన ఎండ (>35°C)',
+        wind: 'ఈదురు గాలులు (>20 km/h)',
+        mandiRain: 'మండి భారీ వర్షం',
+        favorable: 'అనుకూల నిర్మల ఆకాశం'
+      },
+      activeScenario: 'క్రియాశీల అనుకరణ మోడ్'
+    },
+    hourlyForecast: {
+      title: '24-గంటల వాతావరణ సూచన',
+      now: 'ఇప్పుడు'
+    },
+    logisticsImpact: {
+      title: 'సేకరణ లాజిస్టిక్స్ ప్రభావం',
+      appointmentNotice: 'మీ షెడ్యూల్ చేసిన స్లాట్‌కు అనుసంధానించబడింది',
+      vehicleNotice: 'వాహన రక్షణ నియమావళి',
+      viewCenterStatus: 'కేంద్రం స్థితిని చూడండి'
+    },
+    viewFullDashboard: 'వాతావరణ & సలహా కేంద్రాన్ని తెరవండి'
+  },
+  stages8: {
+    slotBooked: '౧. స్లాట్ బుక్ చేయబడింది',
+    gateCheckin: '౨. గేట్ చెక్-ఇన్',
+    qualityTesting: '౩. నాణ్యత పరీక్ష',
+    grossWeighing: '౪. స్థూల తూకం',
+    unloading: '౫. అన్‌లోడింగ్',
+    tareWeighing: '౬. ఖాళీ వాహన తూకం',
+    procurement: '౭. సేకరణ ఆమోదం',
+    digitalReceipt: '౮. డిజిటల్ రసీదు'
+  },
+  adminMetricsBanner: {
+    totalBookings: 'మొత్తం బుకింగ్‌లు',
+    checkedIn: 'గేట్ ప్రవేశం',
+    waiting: 'వేచి ఉన్నారు',
+    processing: 'ప్రక్రియలో ఉంది',
+    completed: 'పూర్తయింది',
+    delayed: 'ఆలస్యమైంది'
+  },
+  gateCheckInModal: {
+    title: 'గేట్ ప్రవేశ ధృవీకరణ',
+    subtitle: 'టోకెన్ క్యూఆర్ కోడ్‌ను ధృవీకరించి వాహనాన్ని మండి యార్డులోకి అనుమతించండి',
+    farmerName: 'రైతు పేరు',
+    farmerId: 'రైతు ఐడీ',
+    crop: 'పంట',
+    quantity: 'పరిమాణం',
+    vehicle: 'వాహనం',
+    timeSlot: 'సమయ స్లాట్',
+    checkInAction: 'చెక్-ఇన్ (CHECK-IN)',
+    successMessage: 'టోకెన్ ధృవీకరించబడింది మరియు గేట్ చెక్-ఇన్ నిర్ధారించబడింది!'
+  },
+  digitalReceipt: {
+    title: 'డిజిటల్ సేకరణ రసీదు',
+    subtitle: 'ప్రభుత్వ కనీస మద్దతు ధర (MSP) ధృవీకరించబడిన చెల్లింపు పత్రం',
+    receiptId: 'రసీదు సంఖ్య',
+    tokenNumber: 'టోకెన్ సంఖ్య',
+    farmerName: 'రైతు పేరు',
+    farmerId: 'రైతు ఐడీ',
+    village: 'గ్రామం',
+    crop: 'సేకరించిన పంట',
+    dockageGrade: 'నాణ్యత గ్రేడ్',
+    moistureLevel: 'తేమ శాతం',
+    foreignMatter: 'ఇతర పదార్థాలు',
+    grossWeight: 'స్థూల బరువు',
+    tareWeight: 'ఖాళీ వాహన బరువు',
+    netWeight: 'తుది నికర బరువు',
+    mspRate: 'కనీస మద్దతు ధర',
+    moistureDeduction: 'తేమ మినహాయింపు',
+    totalPayable: 'మొత్తం చెల్లించవలసిన మొత్తం',
+    paymentStatus: 'చెల్లింపు స్థితి',
+    dbtStatus: 'డైరెక్ట్ బెనిఫిట్ ట్రాన్స్‌ఫర్ (DBT) విజయవంతం',
+    downloadPdf: 'రసీదు డౌన్‌లోడ్ (PDF)',
+    printReceipt: 'ప్రింట్ రసీదు',
+    closeReceipt: 'మూసివేయండి',
+    viewReceipt: 'డిజిటల్ రసీదు చూడండి',
+    previewReceipt: 'రసీదు మునుజూపు',
+    receiptNotice: 'ఈ రసీదు ఆధార్ ఆధారిత బ్యాంకు ఖాతాకు ప్రత్యక్ష చెల్లింపు కొరకు డిజిటల్ సంతకం చేయబడింది.',
+    disbursementTime: 'చెల్లింపు సమయం',
+    weighbridgeSlip: 'ఎలక్ట్రానిక్ వేబ్రిడ్జి తూకం రసీదు',
+    govtSeal: 'భారత ప్రభుత్వం • వ్యవసాయ మరియు రైతు సంక్షేమ మంత్రిత్వ శాఖ',
+    verifiedSignature: 'డిజిటల్ రూపంలో ధృవీకరించబడింది మరియు ఆమోదించబడింది',
+    centerLabel: 'సేకరణ కేంద్రం',
+    slotLabel: 'రాక సమయం'
+  },
+  voiceAssistant: {
+    assistantTitle: 'కిసాన్ సేతు వాయిస్ అసిస్టెంట్',
+    assistantSubtitle: 'హ్యాండ్స్-ఫ్రీ వాయిస్ నావిగేషన్ మరియు సహాయం',
+    listening: 'వింటోంది... ఇప్పుడు మాట్లాడండి',
+    speaking: 'సమాధానం చెబుతోంది...',
+    ready: 'మాట్లాడటానికి మైక్రోఫోన్ నొక్కండి',
+    notSupported: 'ఈ బ్రౌజర్‌లో వాయిస్ రికగ్నిషన్ సపోర్ట్ లేదు',
+    micPermissionDenied: 'మైక్రోఫోన్ అనుమతి నిరాకరించబడింది. దయచేసి మైక్ అనుమతించండి.',
+    commandsTitle: 'ఈ ఆదేశాలలో దేనినైనా చెప్పండి:',
+    cmdBookSlot: 'స్లాట్ బుక్ చేయండి',
+    cmdCheckQueue: 'క్యూ స్థితిని తనిఖీ చేయండి',
+    cmdReadWeather: 'వాతావరణ హెచ్చరికను చదవండి',
+    cmdDigitalPass: 'డిజిటల్ పాస్ చూపించండి',
+    cmdStartGuided: 'వాయిస్ గైడెడ్ బుకింగ్ ప్రారంభించండి',
+    playAudio: 'ఆడియో వినండి',
+    stopAudio: 'ఆడియో ఆపండి',
+    guidedTitle: 'వాయిస్ గైడెడ్ బుకింగ్ అసిస్టెంట్',
+    guidedStep1: 'ఈరోజు మీరు ఏ పంటను అమ్మాలనుకుంటున్నారు? (ఉదా. వరి, గోధుమ, ఆవాలు, పత్తి, పప్పుధాన్యాలు)',
+    guidedStep2: 'ఎన్ని క్వింటాళ్ల పరిమాణం? (ఉదా. 35 క్వింటాళ్లు)',
+    guidedStep3: 'మీరు ఏ వాహనాన్ని తీసుకువస్తున్నారు? (ఉదా. ట్రాక్టర్, ట్రక్, ఎడ్ల బండి)',
+    guidedConfirm: 'వివరాలన్నీ నమోదయ్యాయి. స్లాట్ విజయవంతంగా బుక్ చేయబడింది! మీ పాస్ సిద్ధంగా ఉంది.',
+    guidedRestart: 'మళ్లీ ప్రారంభించండి',
+    voiceDictation: 'వాయిస్ ద్వారా మాట్లాడి నమోదు చేయడానికి క్లిక్ చేయండి',
+    quickCommands: 'శీఘ్ర వాయిస్ ఆదేశాలు',
+    recognizedText: 'మీరు చెప్పినది:'
+  }
+};
+
+// 4. PUNJABI (ਪੰਜਾਬੀ)
 const pa: TranslationDict = {
   ...hi,
   brandName: 'ਕਿਸਾਨ ਸੇਤੂ',
@@ -1323,7 +2015,7 @@ const pa: TranslationDict = {
   }
 };
 
-// 4. MARATHI (मराठी)
+// 5. MARATHI (मराठी)
 const mr: TranslationDict = {
   ...hi,
   brandName: 'किसान सेतू',
@@ -1377,63 +2069,6 @@ const mr: TranslationDict = {
     vehicleLabel: 'वाहन निवड',
     confirmBookingBtn: 'केंद्र निश्चित करा आणि पास मिळवा',
     bookingNotice: 'क्यूआर कोडसह डिजिटल पास त्वरित जारी केला जाईल.'
-  }
-};
-
-// 5. TELUGU (తెలుగు)
-const te: TranslationDict = {
-  ...en,
-  brandName: 'కిసాన్ సేతు',
-  brandTagline: 'డిజిటల్ వ్యవసాయ సేకరణ వ్యవస్థ',
-  langSwitchLabel: 'భాషను ఎంచుకోండి',
-  activeLanguage: 'తెలుగు',
-  roleSwitcher: {
-    farmer: 'రైతు యాప్',
-    admin: 'నిర్వాహక డాష్‌బోర్డ్',
-    farmerDesc: 'నమోదు, స్లాట్ బుకింగ్ మరియు లైవ్ క్యూ పాస్',
-    adminDesc: 'మార్కెట్ యార్డ్ గేట్ స్కానర్ మరియు వేబ్రిడ్జి నిర్వహణ'
-  },
-  crops: {
-    ...en.crops,
-    PADDY: 'వరి',
-    WHEAT: 'గోధుమలు',
-    MAIZE: 'మొక్కజొన్న',
-    RED_GRAM: 'కందులు',
-    BENGAL_GRAM: 'శనగలు',
-    GREEN_GRAM: 'పెసలు',
-    GROUNDNUT: 'వేరుశనగ',
-    SOYBEAN: 'సోయాబీన్'
-  },
-  centerStatus: {
-    open: 'తెరిచి ఉంది',
-    busy: 'రద్దీగా ఉంది',
-    closed: 'మూసివేయబడింది'
-  },
-  centerDetails: {
-    currentQueue: 'ప్రస్తుత క్యూ',
-    estimatedWaiting: 'అంచనా వేచి ఉండే సమయం',
-    availableSlots: 'అందుబాటులో ఉన్న స్లాట్లు',
-    location: 'ప్రదేశం మరియు దూరం',
-    selectCenter: 'సేకరణ కేంద్రాన్ని ఎంచుకోండి',
-    selected: 'ఎంచుకున్న కేంద్రం',
-    vehiclesWaiting: 'వాహనాలు వేచి ఉన్నాయి',
-    minsWait: 'నిమిషాలు',
-    slotsOpenToday: 'నేడు అందుబాటులో ఉన్న స్లాట్లు'
-  },
-  farmerIntake: {
-    centerTitle: '౧. సేకరణ కేంద్రాన్ని ఎంచుకోండి',
-    centerSubtitle: 'క్యూ మరియు వేచి ఉండే సమయం ఆధారంగా కేంద్రాన్ని ఎంచుకోండి.',
-    cropTitle: '౨. పంటను ఎంచుకోండి',
-    cropSubtitle: 'మీ ప్రధాన పంటను ఎంచుకోండి. డెమో కోసం వరి ప్రధానంగా ఎంపిక చేయబడింది.',
-    detailsTitle: '౩. పరిమాణం మరియు వాహనం వివరాలు',
-    detailsSubtitle: 'అంచనా పరిమాణం మరియు మీ రవాణా వాహనాన్ని ఎంచుకోండి.',
-    demoStar: 'డెమో ముఖ్య పంట',
-    selectedCropLabel: 'ఎంచుకున్న పంట',
-    quantityLabel: 'పరిమాణం (క్వింటాళ్ళలో)',
-    quantityUnit: 'క్వింటాళ్ళు',
-    vehicleLabel: 'వాహనం ఎంపిక',
-    confirmBookingBtn: 'కేంద్రాన్ని నిర్ధారించి పాస్ పొందండి',
-    bookingNotice: 'క్యూఆర్ కోడ్ డిజిటల్ పాస్ వెంటనే జారీ చేయబడుతుంది.'
   }
 };
 

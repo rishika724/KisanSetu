@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import QRCode from 'qrcode';
 import { useLanguage } from '../context/LanguageContext';
+import { useVoiceAssistant } from '../context/VoiceAssistantContext';
+import { PlayAudioButton } from './VoiceAssistant/PlayAudioButton';
 import { useSyncStore, SyncBooking, getStageNumber, SIH_8_STAGES } from '../lib/syncStore';
 import {
   ShieldCheck,
@@ -28,7 +30,7 @@ interface OfflinePassCardProps {
 }
 
 export function OfflinePassCard({ onNavigateBooking }: OfflinePassCardProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const sync = useSyncStore();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -137,12 +139,29 @@ export function OfflinePassCard({ onNavigateBooking }: OfflinePassCardProps) {
       ? 'bg-blue-100 text-blue-900 border-blue-300'
       : 'bg-amber-100 text-amber-900 border-amber-300';
 
+  const { activeHighlightKey } = useVoiceAssistant();
+  const isHighlighted = activeHighlightKey === 'digital-pass-card';
+
+  const passSpokenText = activeBooking
+    ? language === 'te'
+      ? `డిజిటల్ పాస్ నిర్ధారణ: టోకెన్ సంఖ్య ${activeBooking.tokenNumber}. రైతు ${activeBooking.farmerName}. సేకరణ కేంద్రం ${activeBooking.centerName}. రాక తేదీ ${activeBooking.date}, సమయం ${activeBooking.timeSlot}. పంట ${t.crops[activeBooking.crop]}, పరిమాణం ${activeBooking.quantity} క్వింటాళ్లు. వాహనం ${t.vehicles[activeBooking.vehicleType]}.`
+      : language === 'hi'
+      ? `डिजिटल पास विवरण: टोकन नंबर ${activeBooking.tokenNumber}। किसान ${activeBooking.farmerName}। खरीद केंद्र ${activeBooking.centerName}। आगमन तिथि ${activeBooking.date}, समय ${activeBooking.timeSlot}। फसल ${t.crops[activeBooking.crop]}, मात्रा ${activeBooking.quantity} क्विंटल। वाहन ${t.vehicles[activeBooking.vehicleType]}।`
+      : `Digital Pass Summary: Token ${activeBooking.tokenNumber} for farmer ${activeBooking.farmerName}. Center: ${activeBooking.centerName}. Arrival Date: ${activeBooking.date}, Slot: ${activeBooking.timeSlot}. Crop: ${t.crops[activeBooking.crop]}, Quantity: ${activeBooking.quantity} quintals. Vehicle: ${t.vehicles[activeBooking.vehicleType]}.`
+    : t.digitalPass.noPassFound;
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Printable Digital Pass */}
-      <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-lg overflow-hidden printable-pass">
+      <div
+        className={`bg-white rounded-3xl border-2 shadow-lg overflow-hidden printable-pass transition-all duration-300 ${
+          isHighlighted
+            ? 'ring-4 ring-emerald-500 shadow-2xl scale-[1.01] border-emerald-500 bg-emerald-50/20'
+            : 'border-slate-300'
+        }`}
+      >
         {/* Pass Top Banner */}
-        <div className="p-6 bg-slate-900 text-white flex items-center justify-between border-b-2 border-slate-700">
+        <div className="p-6 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-700">
           <div className="flex items-center space-x-3.5">
             <div className="p-2.5 bg-slate-800 rounded-2xl border border-slate-700 text-emerald-400">
               <ShieldCheck className="w-7 h-7" />
@@ -157,9 +176,16 @@ export function OfflinePassCard({ onNavigateBooking }: OfflinePassCardProps) {
             </div>
           </div>
 
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-slate-300">
-            <WifiOff className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{t.digitalPass.offlineBadge}</span>
+          <div className="flex items-center space-x-2 self-start sm:self-center">
+            <PlayAudioButton
+              textToSpeak={passSpokenText}
+              highlightKey="digital-pass-card"
+              size="sm"
+            />
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-slate-300">
+              <WifiOff className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{t.digitalPass.offlineBadge}</span>
+            </div>
           </div>
         </div>
 

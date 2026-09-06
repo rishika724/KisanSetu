@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { FarmerRegistrationLogin } from '../components/FarmerApp/FarmerRegistrationLogin';
 import { MobileBookingWizard } from '../components/MobileBookingWizard';
 import { ProcurementBookingForm } from '../components/ProcurementBookingForm';
 import { OfflinePassCard } from '../components/OfflinePassCard';
 import { QueueProgressCard } from '../components/QueueProgressCard';
-import { FarmerWeatherWidget } from '../components/FarmerWeatherWidget';
 import { FarmerWeatherDashboard } from '../components/FarmerWeatherDashboard';
 import { KisanSetuOfficerPortal } from '../components/OfficerPortal/KisanSetuOfficerPortal';
+import { VoiceAssistantWidget } from '../components/VoiceAssistant/VoiceAssistantWidget';
+import { useVoiceAssistant } from '../context/VoiceAssistantContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useSyncStore, SyncBooking } from '../lib/syncStore';
 import {
@@ -23,8 +24,13 @@ export default function HomePage() {
   const { t } = useLanguage();
   const sync = useSyncStore();
   const role = sync.activeRole;
+  const { registerTabSetter } = useVoiceAssistant();
 
   const [farmerTab, setFarmerTab] = useState<'register' | 'booking' | 'offlinePass' | 'queue' | 'weather'>('register');
+
+  useEffect(() => {
+    registerTabSetter(setFarmerTab);
+  }, [registerTabSetter]);
 
   const handleBookingSuccess = (booking: SyncBooking) => {
     // Switch directly to the pass view once booked
@@ -46,11 +52,6 @@ export default function HomePage() {
         ) : (
           /* ROLE 2: FARMER APP */
           <div className="space-y-6">
-            {/* Live Weather Insights & Microclimate Advisory (Visible in all tabs except dedicated weather dashboard) */}
-            {farmerTab !== 'weather' && (
-              <FarmerWeatherWidget onOpenDashboard={() => setFarmerTab('weather')} />
-            )}
-
             {/* Quick Active Pass Banner if available and currently on register or booking tab */}
             {activeBooking && (farmerTab === 'register' || farmerTab === 'booking') && (
               <div className="max-w-3xl mx-auto p-4 bg-slate-900 text-white rounded-2xl border-2 border-slate-700 shadow-md flex items-center justify-between">
@@ -105,6 +106,9 @@ export default function HomePage() {
             {farmerTab === 'weather' && (
               <FarmerWeatherDashboard onNavigateToBooking={() => setFarmerTab('booking')} />
             )}
+
+            {/* Interactive Hands-Free Voice Assistant Floating UI */}
+            <VoiceAssistantWidget />
           </div>
         )}
       </main>

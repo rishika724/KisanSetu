@@ -30,6 +30,7 @@ import {
   Plus,
   Minus
 } from 'lucide-react';
+import { VoiceDictationButton } from './VoiceAssistant/VoiceDictationButton';
 
 export interface ProcurementCenterItem {
   id: string;
@@ -54,11 +55,13 @@ export const DEMO_PROCUREMENT_CENTERS: ProcurementCenterItem[] = [
     id: 'center-01',
     name: {
       en: 'Mandi Procurement Center #1 (Kota Main)',
-      hi: 'मंडी खरीद केंद्र #1 (कोटा मुख्य)'
+      hi: 'मंडी खरीद केंद्र #1 (कोटा मुख्य)',
+      te: 'మండి సేకరణ కేంద్రం #1 (కోటా ప్రధానం)'
     },
     location: {
       en: 'Bhamashah Mandi Yard, Kota (4.2 km away)',
-      hi: 'भामाशाह मंडी परिसर, कोटा (४.२ किमी दूर)'
+      hi: 'भामाशाह मंडी परिसर, कोटा (४.२ किमी दूर)',
+      te: 'భామషా మండి యార్డ్, కోటా (4.2 కి.మీ దూరం)'
     },
     currentQueue: 12,
     estimatedWaitMinutes: 45,
@@ -69,11 +72,13 @@ export const DEMO_PROCUREMENT_CENTERS: ProcurementCenterItem[] = [
     id: 'center-02',
     name: {
       en: 'Mandi Procurement Center #2 (Karnal Grain Hub)',
-      hi: 'मंडी खरीद केंद्र #2 (करनाल अनाज केंद्र)'
+      hi: 'मंडी खरीद केंद्र #2 (करनाल अनाज केंद्र)',
+      te: 'మండి సేకరణ కేంద్రం #2 (కర్నాల్ ధాన్య కేంద్రం)'
     },
     location: {
       en: 'GT Road Grain Market, Karnal (7.5 km away)',
-      hi: 'जीटी रोड अनाज मंडी, करनाल (७.५ किमी दूर)'
+      hi: 'जीटी रोड अनाज मंडी, करनाल (७.५ किमी दूर)',
+      te: 'జి.టి. రోడ్ ధాన్య మార్కెట్, కర్నాల్ (7.5 కి.మీ దూరం)'
     },
     currentQueue: 24,
     estimatedWaitMinutes: 80,
@@ -84,11 +89,13 @@ export const DEMO_PROCUREMENT_CENTERS: ProcurementCenterItem[] = [
     id: 'center-03',
     name: {
       en: 'Mandi Procurement Center #3 (Bhopal Sub-Center)',
-      hi: 'मंडी खरीद केंद्र #3 (भोपाल उप-केंद्र)'
+      hi: 'मंडी खरीद केंद्र #3 (भोपाल उप-केंद्र)',
+      te: 'మండి సేకరణ కేంద్రం #3 (భోపాల్ ఉప-కేంద్రం)'
     },
     location: {
       en: 'Karond Bypass Yard, Bhopal (11.0 km away)',
-      hi: 'करोंद बायपास यार्ड, भोपाल (११.० किमी दूर)'
+      hi: 'करोंद बायपास यार्ड, भोपाल (११.० किमी दूर)',
+      te: 'కరోండ్ బైపాస్ యార్డ్, భోపాల్ (11.0 కి.మీ దూరం)'
     },
     currentQueue: 6,
     estimatedWaitMinutes: 20,
@@ -99,11 +106,13 @@ export const DEMO_PROCUREMENT_CENTERS: ProcurementCenterItem[] = [
     id: 'center-04',
     name: {
       en: 'Mandi Procurement Center #4 (Indore Yard B)',
-      hi: 'मंडी खरीद केंद्र #4 (इंदौर यार्ड बी)'
+      hi: 'मंडी खरीद केंद्र #4 (इंदौर यार्ड बी)',
+      te: 'మండి సేకరణ కేంద్రం #4 (ఇండోర్ యార్డ్ బి)'
     },
     location: {
       en: 'Choithram Mandi Road, Indore (18.3 km away)',
-      hi: 'चोइथराम मंडी मार्ग, इंदौर (१८.३ किमी दूर)'
+      hi: 'चोइथराम मंडी मार्ग, इंदौर (१८.३ किमी दूर)',
+      te: 'చోయిత్‌రామ్ మండి రోడ్, ఇండోర్ (18.3 కి.మీ దూరం)'
     },
     currentQueue: 0,
     estimatedWaitMinutes: 0,
@@ -187,7 +196,9 @@ export function ProcurementBookingForm({ onBookingSuccess }: ProcurementBookingF
 
     if (activeCenter.status === 'closed') {
       setErrorNotice(
-        language === 'hi'
+        language === 'te'
+          ? 'ఈ సేకరణ కేంద్రం ప్రస్తుతం మూసివేయబడింది. దయచేసి తెరిచి ఉన్న కేంద్రాన్ని ఎంచుకోండి.'
+          : language === 'hi'
           ? 'यह खरीद केंद्र वर्तमान में बंद है। कृपया खुला या व्यस्त केंद्र चुनें।'
           : 'This procurement center is currently closed. Please select an open center.'
       );
@@ -196,7 +207,9 @@ export function ProcurementBookingForm({ onBookingSuccess }: ProcurementBookingF
 
     if (!quantity || quantity <= 0) {
       setErrorNotice(
-        language === 'hi'
+        language === 'te'
+          ? 'దయచేసి సరైన పంట పరిమాణాన్ని క్వింటాళ్ళలో నమోదు చేయండి.'
+          : language === 'hi'
           ? 'कृपया मान्य फसल मात्रा दर्ज करें।'
           : 'Please specify a valid crop quantity in quintals.'
       );
@@ -512,15 +525,15 @@ export function ProcurementBookingForm({ onBookingSuccess }: ProcurementBookingF
               <div className="flex items-center space-x-3 text-xs font-bold text-slate-600">
                 <span className="flex items-center space-x-1">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                  <span>{language === 'hi' ? 'उपलब्ध' : 'Available'}</span>
+                  <span>{t.booking.capacityBadges.available}</span>
                 </span>
                 <span className="flex items-center space-x-1">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                  <span>{language === 'hi' ? 'सीमित' : 'Limited'}</span>
+                  <span>{t.booking.capacityBadges.moderate}</span>
                 </span>
                 <span className="flex items-center space-x-1">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <span>{language === 'hi' ? 'पूर्ण' : 'Full'}</span>
+                  <span>{t.booking.capacityBadges.full}</span>
                 </span>
               </div>
             </div>
@@ -557,10 +570,10 @@ export function ProcurementBookingForm({ onBookingSuccess }: ProcurementBookingF
                         }`}
                       >
                         {isFull
-                          ? (language === 'hi' ? 'पूर्ण' : 'Full')
+                          ? t.booking.capacityBadges.full
                           : isLimited
-                          ? (language === 'hi' ? 'सीमित' : 'Limited')
-                          : (language === 'hi' ? 'उपलब्ध' : 'Available')}
+                          ? t.booking.capacityBadges.moderate
+                          : t.booking.capacityBadges.available}
                       </span>
                     </div>
                     <div
@@ -725,9 +738,20 @@ export function ProcurementBookingForm({ onBookingSuccess }: ProcurementBookingF
                 >
                   {t.farmerIntake.quantityLabel}
                 </label>
-                <span className="text-xs font-black text-emerald-800">
-                  {quantity} {t.common.quintal}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <VoiceDictationButton
+                    onDictated={(text) => {
+                      const num = text.match(/\d+/);
+                      if (num) {
+                        setQuantity(Math.max(1, Math.min(500, parseInt(num[0], 10))));
+                      }
+                    }}
+                    fieldLabel={t.farmerIntake.quantityLabel}
+                  />
+                  <span className="text-xs font-black text-emerald-800">
+                    {quantity} {t.common.quintal}
+                  </span>
+                </div>
               </div>
 
               <div className="relative">

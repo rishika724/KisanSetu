@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   useSyncStore,
@@ -35,7 +35,10 @@ import {
   Radio,
   FileCheck,
   Sliders,
-  ChevronRight
+  ChevronRight,
+  Camera,
+  CameraOff,
+  Zap
 } from 'lucide-react';
 
 export function KisanSetuOfficerPortal() {
@@ -45,6 +48,13 @@ export function KisanSetuOfficerPortal() {
   const [activeTab, setActiveTab] = useState<'overview' | 'scanner' | 'queue' | 'weighing'>('overview');
   const [tokenInput, setTokenInput] = useState('');
   const [scannerMessage, setScannerMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Live Camera Scanner State
+  const [cameraActive, setCameraActive] = useState<boolean>(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [isSimulatingScan, setIsSimulatingScan] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   // Selected Booking for Quality & Weighing
   const [selectedBookingId, setSelectedBookingId] = useState<string>(
@@ -93,6 +103,55 @@ export function KisanSetuOfficerPortal() {
   const totalPayout = Math.max(0, Math.round(netWeightQuintals * mspRate - moisturePenalty));
   const [scannedBooking, setScannedBooking] = useState<SyncBooking | null>(null);
   const [showCheckInModal, setShowCheckInModal] = useState<boolean>(false);
+
+  // Live Camera Scanner Operations
+  const startCamera = async () => {
+    try {
+      setCameraError(null);
+      if (!navigator?.mediaDevices?.getUserMedia) {
+        throw new Error('Camera access API is not available on this browser or environment.');
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch((e) => console.warn('Video playback warning:', e));
+      }
+      setCameraActive(true);
+    } catch (err: any) {
+      console.warn('Webcam not accessible:', err);
+      setCameraError(err?.message || 'Camera permission denied or camera device not found.');
+      setCameraActive(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setCameraActive(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  const handleSimulateScan = (tokenNum: string = 'A023') => {
+    setIsSimulatingScan(true);
+    setScannerMessage(null);
+    setTimeout(() => {
+      setIsSimulatingScan(false);
+      handleVerifyGateToken(tokenNum);
+    }, 650);
+  };
 
   // Gate Scanner Action
   const handleVerifyGateToken = (tokenToVerify?: string) => {
@@ -464,20 +523,27 @@ export function KisanSetuOfficerPortal() {
 
         {/* TAB 2: GATE QR SCANNER & CHECK-IN */}
         {activeTab === 'scanner' && (
-          <div className="max-w-2xl mx-auto space-y-6">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-5">
-              <div className="flex items-start space-x-4 border-b border-slate-100 pb-4">
-                <div className="p-3 bg-slate-900 text-white rounded-2xl">
-                  <QrCode className="w-8 h-8" />
+          <div className="max-w-3xl mx-auto space-y-6">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-6">
+              <div className="flex items-start justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-start space-x-4">
+                  <div className="p-3 bg-slate-900 text-white rounded-2xl">
+                    <QrCode className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-900">
+                      {t.adminDashboard.scanner.title}
+                    </h2>
+                    <p className="text-sm font-medium text-slate-600 mt-0.5">
+                      {t.adminDashboard.scanner.subtitle}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-black text-slate-900">
-                    {t.adminDashboard.scanner.title}
-                  </h2>
-                  <p className="text-sm font-medium text-slate-600 mt-0.5">
-                    {t.adminDashboard.scanner.subtitle}
-                  </p>
-                </div>
+
+                <span className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-full text-xs font-black uppercase">
+                  <Radio className="w-3.5 h-3.5 animate-pulse text-emerald-600" />
+                  <span>{t.common.active}</span>
+                </span>
               </div>
 
               {/* Status Banner */}
@@ -498,9 +564,116 @@ export function KisanSetuOfficerPortal() {
                 </div>
               )}
 
-              {/* Manual Input or Scanned Text */}
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-900">
+              {/* LIVE CAMERA PREVIEW BOX / SIMULATED VIEWFINDER */}
+              <div className="relative w-full aspect-4/3 sm:aspect-16/9 max-h-[360px] bg-slate-950 rounded-3xl overflow-hidden border-2 border-slate-800 shadow-2xl flex items-center justify-center group">
+                {/* Real Video Stream Feed */}
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className={`w-full h-full object-cover ${cameraActive ? 'block' : 'hidden'}`}
+                />
+
+                {/* Dark Viewfinder Standby Screen if camera is off */}
+                {!cameraActive && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-900/90 via-slate-950 to-slate-950">
+                    <div className="w-44 h-44 sm:w-52 sm:h-52 relative flex items-center justify-center border-2 border-dashed border-slate-700/80 rounded-3xl bg-slate-900/50 backdrop-blur-xs">
+                      {/* Targeting Corners */}
+                      <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl" />
+                      <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl" />
+                      <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl" />
+                      <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-emerald-400 rounded-br-xl" />
+
+                      <QrCode className="w-20 h-20 text-slate-600 animate-pulse" />
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-400 mt-4 font-bold max-w-sm">
+                      {t.adminDashboard.scanner.cameraStandby}
+                    </p>
+                  </div>
+                )}
+
+                {/* Animated Scanning Reticle Overlay (Active when Camera is ON or Simulation is running) */}
+                {(cameraActive || isSimulatingScan) && (
+                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                    {/* Targeting Box */}
+                    <div className="w-52 h-52 sm:w-64 sm:h-64 relative">
+                      {/* Glowing Targeting Corners */}
+                      <div className="absolute -top-1 -left-1 w-8 h-8 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+                      <div className="absolute -top-1 -right-1 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+                      <div className="absolute -bottom-1 -left-1 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+                      <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-xl shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+
+                      {/* Animated Laser Scanning Line */}
+                      <div className="absolute inset-x-2 h-1 bg-emerald-400 shadow-[0_0_16px_#34d399] rounded-full animate-bounce top-1/2 -translate-y-1/2" />
+                    </div>
+
+                    {/* Laser scanning badge status */}
+                    <div className="absolute bottom-4 inset-x-0 flex justify-center">
+                      <span className="px-4 py-1.5 bg-slate-900/90 text-emerald-300 border border-emerald-500/40 rounded-full text-xs font-mono font-bold tracking-wider uppercase backdrop-blur-md flex items-center space-x-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                        <span>
+                          {isSimulatingScan
+                            ? t.adminDashboard.scanner.simulationRunning
+                            : t.adminDashboard.scanner.cameraInstructions}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Camera Error Banner if any */}
+              {cameraError && (
+                <div className="p-3 bg-amber-50 border border-amber-300 text-amber-900 rounded-2xl text-xs font-bold flex items-center space-x-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>{cameraError}</span>
+                </div>
+              )}
+
+              {/* ACTION BUTTONS: Live Webcam & Instant Simulation */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (cameraActive) {
+                      stopCamera();
+                    } else {
+                      startCamera();
+                    }
+                  }}
+                  className={`flex items-center justify-center space-x-2.5 py-4 px-5 rounded-2xl font-black text-sm transition-all min-h-[52px] shadow-sm active:scale-98 ${
+                    cameraActive
+                      ? 'bg-red-600 hover:bg-red-700 text-white'
+                      : 'bg-slate-900 hover:bg-slate-800 text-white'
+                  }`}
+                >
+                  {cameraActive ? <CameraOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
+                  <span>
+                    {cameraActive
+                      ? t.adminDashboard.scanner.stopCamera
+                      : t.adminDashboard.scanner.scanWebcamBtn}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSimulateScan('A023')}
+                  disabled={isSimulatingScan}
+                  className="flex items-center justify-center space-x-2.5 py-4 px-5 rounded-2xl font-black text-sm bg-emerald-700 hover:bg-emerald-600 text-white transition-all min-h-[52px] shadow-md hover:shadow-lg active:scale-98 disabled:opacity-50"
+                >
+                  <Zap className={`w-5 h-5 ${isSimulatingScan ? 'animate-spin' : ''}`} />
+                  <span>
+                    {isSimulatingScan
+                      ? t.adminDashboard.scanner.simulationRunning
+                      : t.adminDashboard.scanner.simulateScanBtn}
+                  </span>
+                </button>
+              </div>
+
+              {/* Fallback Manual Input */}
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
                   {t.digitalPass.tokenNumber} / {t.digitalPass.tokenHash}
                 </label>
                 <div className="flex items-center space-x-2">
@@ -517,7 +690,7 @@ export function KisanSetuOfficerPortal() {
                   <button
                     type="button"
                     onClick={() => handleVerifyGateToken()}
-                    className="px-5 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-black text-sm whitespace-nowrap min-h-[52px] shadow-sm transition-all active:scale-95"
+                    className="px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-black text-sm whitespace-nowrap min-h-[52px] shadow-sm transition-all active:scale-98"
                   >
                     {t.adminDashboard.scanner.verifyTokenBtn}
                   </button>
@@ -530,9 +703,24 @@ export function KisanSetuOfficerPortal() {
                   {t.adminDashboard.scanner.quickTestBtn}:
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {/* Dedicated A023 test chip */}
+                  <button
+                    type="button"
+                    onClick={() => handleVerifyGateToken('A023')}
+                    className="p-3 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 rounded-xl text-left text-xs font-bold text-slate-800 transition-all flex items-center justify-between group shadow-xs"
+                  >
+                    <div>
+                      <div className="font-mono text-emerald-900 font-black text-sm">A023 ★</div>
+                      <div className="text-[11px] text-emerald-800">Ramesh • 35 Qtl</div>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 bg-emerald-200 text-emerald-950 font-black rounded-md">
+                      {t.stages8.slotBooked}
+                    </span>
+                  </button>
+
                   {sync.bookings
-                    .filter((b) => b.status === 'BOOKED' || b.status === 'STAGING')
-                    .slice(0, 3)
+                    .filter((b) => b.tokenNumber !== 'A023' && (b.status === 'BOOKED' || b.status === 'STAGING' || b.status === 'SLOT_BOOKED'))
+                    .slice(0, 2)
                     .map((b) => (
                       <button
                         key={b.id}
@@ -1015,7 +1203,7 @@ export function KisanSetuOfficerPortal() {
                 className="flex-2 py-3.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-2xl font-black text-base flex items-center justify-center space-x-2 min-h-[50px] shadow-lg transition-all active:scale-98"
               >
                 <Check className="w-5 h-5" />
-                <span>{t.gateCheckInModal.checkInAction}</span>
+                <span>[ {t.gateCheckInModal.checkInAction} ]</span>
               </button>
             </div>
           </div>
