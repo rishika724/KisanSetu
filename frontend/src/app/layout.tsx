@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import '../globals.css';
+import 'leaflet/dist/leaflet.css';
+import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { VoiceAssistantProvider } from '@/context/VoiceAssistantContext';
 import { PwaRegister } from '@/components/PwaRegister';
