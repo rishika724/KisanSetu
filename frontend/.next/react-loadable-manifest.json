@@ -1,18 +1,1 @@
-{
-  "app\\command-center\\page.tsx -> ../../components/CommandCenter/KisanSetuCommandCenter": {
-    "id": 75797,
-    "files": [
-      "static/chunks/522.92597b8fdf558b4f.js",
-      "static/chunks/797.6954a3ae76bcf452.js"
-    ]
-  },
-  "app\\officer\\page.tsx -> ../../components/OfficerPortal/KisanSetuOfficerPortal": {
-    "id": 87110,
-    "files": [
-      "static/chunks/910-d8d5e94c9f6fdf54.js",
-      "static/chunks/134-95504ffb6b57743c.js",
-      "static/chunks/110-2fff3cf0fdd714e2.js",
-      "static/chunks/983.17f730788ecaa028.js"
-    ]
-  }
-}
+{}
